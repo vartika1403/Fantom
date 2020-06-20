@@ -19,8 +19,9 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-
+import butterknife.OnClick;
 
 
 public class HomeFragment extends Fragment {
@@ -113,12 +114,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
     @Override

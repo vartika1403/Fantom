@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Note> notes) {
                 //update ReyclerView
-                noteAdapter.setNoteList(notes);
+               // noteAdapter.setNoteList(notes);
                 Toast.makeText(MainActivity.this, "Update RecyclerVew", Toast.LENGTH_SHORT).show();
             }
         });
