@@ -19,6 +19,27 @@ public class DetailObject implements Parcelable {
         this.webLink = webLink;
         this.imageUrl = imageUrl;
     }
+
+    protected DetailObject(Parcel in) {
+        fbLink = in.readString();
+        name = in.readString();
+        webLink = in.readString();
+        imageUrl = in.readString();
+        email = in.readString();
+    }
+
+    public static final Creator<DetailObject> CREATOR = new Creator<DetailObject>() {
+        @Override
+        public DetailObject createFromParcel(Parcel in) {
+            return new DetailObject(in);
+        }
+
+        @Override
+        public DetailObject[] newArray(int size) {
+            return new DetailObject[size];
+        }
+    };
+
     public String getFbLink() {
         return fbLink;
     }
@@ -66,6 +87,10 @@ public class DetailObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-
+        parcel.writeString(fbLink);
+        parcel.writeString(name);
+        parcel.writeString(webLink);
+        parcel.writeString(imageUrl);
+        parcel.writeString(email);
     }
 }

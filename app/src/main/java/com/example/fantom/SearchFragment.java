@@ -1,5 +1,6 @@
 package com.example.fantom;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -31,6 +32,7 @@ public class SearchFragment extends Fragment implements SearchInterface{
     private RecyclerView recyclerView;
     private  EntityListAdapter adapter;
     private SearchFragment context;
+    private ProgressDialog dialog;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -61,6 +63,8 @@ public class SearchFragment extends Fragment implements SearchInterface{
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         homeViewModel.setEntityName(entityName);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        dialog = ProgressDialog.show(getActivity(), "",
+                "Loading. Please wait...", true);
         // subscribe live data to get data from ViewModel
         subscribeToLiveData();
 
@@ -72,6 +76,7 @@ public class SearchFragment extends Fragment implements SearchInterface{
             adapter = new EntityListAdapter(detailObjectList, context) ;
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            dialog.dismiss();
             recyclerView.setAdapter(adapter);
         });
     }
