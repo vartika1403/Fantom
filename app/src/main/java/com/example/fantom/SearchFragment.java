@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,7 +22,7 @@ import android.view.ViewGroup;
  * created by vartika sharma
  * create an instance of this Search fragment.
  */
-public class SearchFragment extends Fragment{
+public class SearchFragment extends Fragment implements SearchInterface{
     private static final String TAG = SearchFragment.class.getSimpleName();
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -73,10 +74,7 @@ public class SearchFragment extends Fragment{
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setAdapter(adapter);
         });
-
-       // recyclerView.
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -108,5 +106,17 @@ public class SearchFragment extends Fragment{
         fragmentTransaction.remove(fragment);
     }
 
+    @Override
+    public void setData(DetailObject detailObject) {
+         if (detailObject != null) {
+             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+             Fragment fragment = DetailFragment.newInstance(detailObject);
+             fragmentTransaction.replace(R.id.home_fragment, fragment);
+             fragmentTransaction.addToBackStack(null);
+             fragmentTransaction.commit();
+         }
+
     }
+}
 

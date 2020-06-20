@@ -36,7 +36,8 @@ public class EntityListAdapter extends RecyclerView.Adapter<EntityListAdapter.En
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                SearchInterface searchInterface = (SearchInterface)context;
+                searchInterface.setData(detailObjectList.get(position));
             }
         });
     }
