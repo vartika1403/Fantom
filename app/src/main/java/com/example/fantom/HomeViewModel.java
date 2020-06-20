@@ -35,6 +35,7 @@ public class HomeViewModel extends ViewModel {
       //  database = FirebaseDatabase.getInstance();
 
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+       // databaseReference.child()
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(Conf.firebaseDomainUri());
         loadDataFromFirebase();
@@ -55,7 +56,9 @@ public class HomeViewModel extends ViewModel {
                          detailObject.setName(data.getKey());
                          String fbLink = detailObject.getFbLink();
                          String webLink = detailObject.getWebLink();
-                         Log.d(TAG, "snapshot data 1 2," + fbLink+ ", webLink," + webLink);
+                         String imageUrl = detailObject.getImage();
+                         Log.d(TAG, "snapshot data 1 2," + fbLink+ ", webLink," + webLink +
+                                 " image url," + imageUrl);
                          entityList.add(detailObject);
                      } catch (Exception e) {
                          e.printStackTrace();

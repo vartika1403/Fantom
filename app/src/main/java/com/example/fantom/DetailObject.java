@@ -7,24 +7,33 @@ public class DetailObject implements Parcelable {
     private String fbLink;
     private String name;
     private String webLink;
-    private String imageUrl;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    private String image;
     private String email;
 
     public DetailObject() {
 
     }
-    public DetailObject(String name,String fbLink,  String webLink, String imageUrl) {
+    public DetailObject(String name,String fbLink,  String webLink, String image) {
         this.fbLink = fbLink;
         this.name = name;
         this.webLink = webLink;
-        this.imageUrl = imageUrl;
+        this.image = image;
     }
 
     protected DetailObject(Parcel in) {
         fbLink = in.readString();
         name = in.readString();
         webLink = in.readString();
-        imageUrl = in.readString();
+        image = in.readString();
         email = in.readString();
     }
 
@@ -65,11 +74,11 @@ public class DetailObject implements Parcelable {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return image;
     }
 
     public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+        this.image = imageUrl;
     }
 
     public String getEmail() {
@@ -90,7 +99,7 @@ public class DetailObject implements Parcelable {
         parcel.writeString(fbLink);
         parcel.writeString(name);
         parcel.writeString(webLink);
-        parcel.writeString(imageUrl);
+        parcel.writeString(image);
         parcel.writeString(email);
     }
 }

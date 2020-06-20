@@ -15,6 +15,7 @@
     <color name="color_grey">#FF3E3E3E</color>
     <color name="color_green">#FF2BC5B4</color>
     <color name="color_green_dark">#FF1e7c72</color>
+    <color name="color_light_blue">#B3E5FC</color>
     <color name="color_green_highlight">#FF8dfff2</color>
     <color name="color_navy_highlight">#FF828da8</color>
     <color name="color_alert">#FFF3464A</color>

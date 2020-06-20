@@ -1,17 +1,24 @@
 package com.example.fantom;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -123,6 +130,30 @@ public class DetailFragment extends Fragment {
     }
 
     private void setImageToView() {
+        if (detailObject != null && detailObject.getImage() != null
+                && !detailObject.getImage().isEmpty()) {
+            bandImage.setVisibility(View.VISIBLE);
+
+            // Create a storage reference from our app
+            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(detailObject.getImageUrl());
+
+            Log.d(TAG, "storageRef, " + storageRef.getDownloadUrl());
+           // storageRef.
+            // Load the image using Glide
+            storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+
+                }
+            });
+            Glide.with(this /* context */)
+                    .load(storageRef)
+                    .centerCrop()
+                    .placeholder(R.drawable.splash)
+                    .into(bandImage);
+        } /*else {
+            bandImage.setVisibility(View.GONE);
+        }*/
     }
 
 
