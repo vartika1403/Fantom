@@ -30,7 +30,7 @@ public class SearchFragment extends Fragment implements SearchInterface{
     private String entityName;
     private RecyclerView recyclerView;
     private  EntityListAdapter adapter;
-    private Context context;
+    private SearchFragment context;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -48,7 +48,7 @@ public class SearchFragment extends Fragment implements SearchInterface{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            context = getActivity();
+            context = this;
             entityName = getArguments().getString(ARG_PARAM1);
         }
     }

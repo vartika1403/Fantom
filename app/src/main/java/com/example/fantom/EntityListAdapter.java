@@ -14,9 +14,9 @@ import java.util.List;
 public class EntityListAdapter extends RecyclerView.Adapter<EntityListAdapter.EntityViewHolder> {
     private static final String TAG = EntityListAdapter.class.getSimpleName();
     private List<DetailObject> detailObjectList;
-    private Context context;
+    private SearchFragment context;
 
-    public EntityListAdapter(List<DetailObject> detailObjectList, Context context) {
+    public EntityListAdapter(List<DetailObject> detailObjectList, SearchFragment context) {
         this.detailObjectList = detailObjectList;
         this.context = context;
     }
