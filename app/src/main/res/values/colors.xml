@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="navy">#FF2A2D36</color>
+    <color name="light_gray">#FFF6F6F6</color>
+    <color name="main_subs">#FFA9A9A9</color>
+    <color name="color_white">#FFFFFFFF</color>
+    <color name="gray">#FFA9A9A9</color>
+    <color name="home_subtitles">#ff828da8</color>
+    <color name="subtle_white">#FFE6E6E6</color>
+    <color name="subtle_navy">#FF353841</color>
+    <color name="blue_gray">#FF828da8</color>
+    <color name="color_grey">#FF3E3E3E</color>
+    <color name="color_green">#FF2BC5B4</color>
+    <color name="color_green_dark">#FF1e7c72</color>
+    <color name="color_green_highlight">#FF8dfff2</color>
+    <color name="color_navy_highlight">#FF828da8</color>
+    <color name="color_alert">#FFF3464A</color>
+    <color name="main_subtitles_dark">#a9a9a9</color>
+    <color name="saavn_color">#FF2BC5B4</color>
+    <color name="saavn_color_light">#FFABDBD6</color>
+    <color name="launch_bg_Color">#f6f6f6</color>
+
+    <!-- 6.0 WHITE THEME -->
+    <color name="main_titles">#FF3E3E3E</color>
+    <color name="primary_new">#F6F6F6</color>
+    <color name="divider_light">#cccccc</color>
+</resources>
