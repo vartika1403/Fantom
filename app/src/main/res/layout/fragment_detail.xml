@@ -13,7 +13,6 @@
         app:layout_constraintTop_toTopOf="parent"
          />
 
-
     <TextView
         android:id="@+id/entityName"
         android:text="EnityName:"
@@ -59,10 +58,11 @@
         android:text="fb link"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:autoLink="web"
         android:maxLines="2"
+        android:lines="2"
         android:textColor="@color/color_green_dark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
         android:autoLink="web"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/color_green_dark"
         android:layout_width="wrap_content"

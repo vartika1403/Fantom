@@ -5,10 +5,12 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -79,8 +81,8 @@ public class DetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, view);
-        if (savedInstanceState != null)
-        detailObject = savedInstanceState.getParcelable(ARG_PARAM1);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
         //logs view event for search fragment
         firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         //logs view event
@@ -166,6 +168,13 @@ public class DetailFragment extends Fragment {
         } /*else {
             bandImage.setVisibility(View.GONE);
         }*/
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+       // ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
     }
 
 
