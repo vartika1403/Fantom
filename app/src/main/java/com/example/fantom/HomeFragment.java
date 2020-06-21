@@ -1,9 +1,12 @@
 package com.example.fantom;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -14,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -34,13 +39,14 @@ public class HomeFragment extends Fragment {
 
     private String selectedItem;
 
-    private OnFragmentInteractionListener mListener;
-
     @BindView(R.id.spinner)
     Spinner spinner;
 
     @BindView(R.id.button)
     Button button;
+
+    @BindView(R.id.spinner_image)
+    ImageView spinnerDropDownImage;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -71,6 +77,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this,view);
 
+        //R.id.spinner_layout;
         firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         //logs view event
         Bundle bundle = new Bundle();
@@ -83,6 +90,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedItem = (String) adapterView.getItemAtPosition(i);
+
             }
 
             @Override
@@ -102,13 +110,17 @@ public class HomeFragment extends Fragment {
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, categories);
+                R.layout.spinner_text, categories);
 
         // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown);
 
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
+        Drawable mIcon= ContextCompat.getDrawable(getActivity(), R.mipmap.drop_down);
+        mIcon.setColorFilter(ContextCompat.getColor(getActivity(), R.color.color_green_dark),
+                PorterDuff.Mode.MULTIPLY);
+        spinnerDropDownImage.setImageDrawable(mIcon);
         return view;
     }
 
@@ -133,15 +145,12 @@ public class HomeFragment extends Fragment {
 
     }
 
+
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+
 }

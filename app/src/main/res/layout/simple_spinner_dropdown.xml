@@ -7,6 +7,7 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:textStyle="bold"
+        android:textColor="@color/color_green_dark"
         android:ellipsize="marquee"
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
