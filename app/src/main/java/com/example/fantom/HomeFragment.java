@@ -16,6 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private FirebaseAnalytics firebaseAnalytics;
 
     private String selectedItem;
 
@@ -68,6 +71,14 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this,view);
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        //logs view event
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ORIGIN, "HomeFragment");
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
+
+        firebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        firebaseAnalytics.setMinimumSessionDuration(1000);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -83,6 +94,7 @@ public class HomeFragment extends Fragment {
         // Spinner Drop down elements
         List<String> categories = new ArrayList<String>();
         categories.add("Bands");
+        categories.add("Singer");
         categories.add("Spinner");
         categories.add("Drummer");
         categories.add("Flute");
@@ -93,7 +105,7 @@ public class HomeFragment extends Fragment {
                 android.R.layout.simple_spinner_item, categories);
 
         // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
@@ -103,6 +115,10 @@ public class HomeFragment extends Fragment {
     //move to searchFragment
     @OnClick(R.id.button)
     public void clickButton() {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ORIGIN, "HomeFragment");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, selectedItem);
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         Fragment fragment =  SearchFragment.newInstance(selectedItem, "");
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

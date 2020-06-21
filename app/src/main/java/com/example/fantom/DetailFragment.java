@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -30,6 +31,7 @@ public class DetailFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private DetailObject detailObject;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @BindView(R.id.image)
     ImageView bandImage;
@@ -79,6 +81,16 @@ public class DetailFragment extends Fragment {
         ButterKnife.bind(this, view);
         if (savedInstanceState != null)
         detailObject = savedInstanceState.getParcelable(ARG_PARAM1);
+        //logs view event for search fragment
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        //logs view event
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
+
+        firebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        firebaseAnalytics.setMinimumSessionDuration(1000);
+
         //set image
         setImageToView();
 

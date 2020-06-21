@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 
 /**
@@ -33,6 +34,7 @@ public class SearchFragment extends Fragment implements SearchInterface{
     private  EntityListAdapter adapter;
     private SearchFragment context;
     private ProgressDialog dialog;
+    private FirebaseAnalytics firebaseAnalytics;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -60,6 +62,8 @@ public class SearchFragment extends Fragment implements SearchInterface{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+        setRetainInstance(true);
+
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         homeViewModel.setEntityName(entityName);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -67,7 +71,15 @@ public class SearchFragment extends Fragment implements SearchInterface{
                 "Loading. Please wait...", true);
         // subscribe live data to get data from ViewModel
         subscribeToLiveData();
+        //logs view event for search fragment
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        //logs view event
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
 
+        firebaseAnalytics.setAnalyticsCollectionEnabled(true);
+        firebaseAnalytics.setMinimumSessionDuration(1000);
         return view;
     }
 
@@ -114,6 +126,10 @@ public class SearchFragment extends Fragment implements SearchInterface{
     @Override
     public void setData(DetailObject detailObject) {
          if (detailObject != null) {
+             Bundle bundle = new Bundle();
+             bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
+             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, detailObject.getName());
+             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
              FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
              FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
              Fragment fragment = DetailFragment.newInstance(detailObject);
