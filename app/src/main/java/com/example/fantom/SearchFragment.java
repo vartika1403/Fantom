@@ -2,8 +2,10 @@ package com.example.fantom;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,6 +21,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,6 +41,9 @@ public class SearchFragment extends Fragment implements SearchInterface{
     private SearchFragment context;
     private ProgressDialog dialog;
     private FirebaseAnalytics firebaseAnalytics;
+    private List<DetailObject> detailObjectList;
+    private Parcelable recyclerViewState;
+    private LinearLayoutManager linearLayoutManager;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -67,8 +76,11 @@ public class SearchFragment extends Fragment implements SearchInterface{
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         homeViewModel.setEntityName(entityName);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        detailObjectList = new ArrayList<>();
         dialog = ProgressDialog.show(getActivity(), "",
                 "Loading. Please wait...", true);
+        //initialize recyclerview and adapter
+     //   initRecyclerView();
         // subscribe live data to get data from ViewModel
         subscribeToLiveData();
         //logs view event for search fragment
@@ -83,14 +95,37 @@ public class SearchFragment extends Fragment implements SearchInterface{
         return view;
     }
 
+    private void initRecyclerView() {
+        adapter = new EntityListAdapter(detailObjectList, context) ;
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void subscribeToLiveData() {
         homeViewModel.getDataFromFirebase().observe(this, detailObjectList -> {
             adapter = new EntityListAdapter(detailObjectList, context) ;
             recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            dialog.dismiss();
+          // detailObjectList.addAll(detailObjectList);
+             linearLayoutManager = new LinearLayoutManager(getActivity());
+            linearLayoutManager.setSmoothScrollbarEnabled(true);
+            linearLayoutManager.onRestoreInstanceState(recyclerViewState);
+            recyclerView.setLayoutManager(linearLayoutManager);
+
             recyclerView.setAdapter(adapter);
+            dialog.dismiss();
+           // recyclerView.setAdapter(adapter);
         });
+
+/*
+        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+
+            }
+        });
+*/
     }
 
     @Override
@@ -137,7 +172,29 @@ public class SearchFragment extends Fragment implements SearchInterface{
              fragmentTransaction.addToBackStack(null);
              fragmentTransaction.commit();
          }
-
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        // Save list state
+        recyclerViewState = linearLayoutManager.onSaveInstanceState();
+        state.putParcelable("state", recyclerViewState);
+    }
+
+   /* @Override
+    public void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        // Retrieve list state and list/item positions
+        if(state != null)
+            mListState = state.getParcelable(LIST_STATE_KEY);
+    }*/
+
+   // @Override
+    //public void onRestoreInstanceState() {
+      //  super.onViewStateRestored();
+    //}
 }
 
