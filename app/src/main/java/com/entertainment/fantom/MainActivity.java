@@ -1,4 +1,4 @@
-package com.example.fantom;
+package com.entertainment.fantom;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;

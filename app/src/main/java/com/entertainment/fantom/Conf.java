@@ -1,4 +1,4 @@
-package com.example.fantom;
+package com.entertainment.fantom;
 
 public class Conf {
     public static final String FIREBASE_CHAT_URI = "chat/"; // chat URI

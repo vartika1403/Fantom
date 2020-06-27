@@ -1,4 +1,4 @@
-package com.example.fantom;
+package com.entertainment.fantom;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

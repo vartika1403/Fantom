@@ -1,4 +1,4 @@
-package com.example.fantom;
+package com.entertainment.fantom;
 
 import android.os.Parcel;
 import android.os.Parcelable;

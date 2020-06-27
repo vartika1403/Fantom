@@ -1,8 +1,7 @@
-package com.example.fantom;
+package com.entertainment.fantom;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 
 import androidx.lifecycle.LiveData;
 

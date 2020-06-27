@@ -1,4 +1,4 @@
-package com.example.fantom;
+package com.entertainment.fantom;
 
 import android.content.Context;
 import android.os.AsyncTask;
