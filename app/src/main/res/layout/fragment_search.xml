@@ -5,6 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".SearchFragment">
 
+    <TextView
+        android:id="@+id/not_available_text"
+        android:visibility="gone"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:text="DATA NOT AVAILABLE NOW, WE WILL BACK WITH UPDATED DATA"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_marginTop="20dp"

@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -43,6 +44,7 @@ public class SearchFragment extends Fragment implements SearchInterface{
     private List<DetailObject> detailObjectList;
     private Parcelable recyclerViewState;
     private LinearLayoutManager linearLayoutManager;
+    private TextView notAvailableText;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -75,6 +77,7 @@ public class SearchFragment extends Fragment implements SearchInterface{
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         homeViewModel.setEntityName(entityName);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        notAvailableText =  (TextView)view.findViewById(R.id.not_available_text);
         detailObjectList = new ArrayList<>();
         dialog = ProgressDialog.show(getActivity(), "",
                 "Loading. Please wait...", true);
@@ -104,6 +107,11 @@ public class SearchFragment extends Fragment implements SearchInterface{
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void subscribeToLiveData() {
         homeViewModel.getDataFromFirebase().observe(this, detailObjectList -> {
+            if (detailObjectList ==null || detailObjectList.size() == 0) {
+                notAvailableText.setVisibility(View.VISIBLE);
+            } else {
+                notAvailableText.setVisibility(View.GONE);
+            }
             adapter = new EntityListAdapter(detailObjectList, context) ;
             recyclerView.setHasFixedSize(true);
           // detailObjectList.addAll(detailObjectList);
