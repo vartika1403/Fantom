@@ -218,8 +218,10 @@ public class SearchFragment extends Fragment implements SearchInterface{
         super.onSaveInstanceState(state);
 
         // Save list state
-        recyclerViewState = linearLayoutManager.onSaveInstanceState();
-        state.putParcelable("state", recyclerViewState);
+        if (linearLayoutManager != null) {
+            recyclerViewState = linearLayoutManager.onSaveInstanceState();
+            state.putParcelable("state", recyclerViewState);
+        }
     }
 
    /* @Override
