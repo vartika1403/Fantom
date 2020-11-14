@@ -6,6 +6,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 
+import android.app.ActionBar;
+import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -24,13 +28,21 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
+        // Enabling Up / Back navigation
+      //  getActionBar().setDisplayHomeAsUpEnabled(true);
         loadHomeFragment();
 
+        ActionBar actionBar = getActionBar();
+        Log.d(TAG, "action bar, " + actionBar);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setBackgroundDrawable(new ColorDrawable(Color.RED));
+        }
     }
 
     private void loadHomeFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-                Fragment fragment =  new HomeFragment();
+        Fragment fragment =  new HomeFragment();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.home_fragment, fragment);
         fragmentTransaction.addToBackStack(null);
@@ -40,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        int count = getSupportFragmentManager().getBackStackEntryCount();
+        int count = getFragmentManager().getBackStackEntryCount();
 
         Log.d(TAG, "count , " + count);
         if (count == 1) {
@@ -50,7 +62,7 @@ public class HomeActivity extends AppCompatActivity {
             super.onBackPressed();
             //additional code
         } else {
-            getSupportFragmentManager().popBackStack();
+            getFragmentManager().popBackStack();
         }
 
     }

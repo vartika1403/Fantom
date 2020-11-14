@@ -1,16 +1,21 @@
 package com.entertainment.fantom;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -119,6 +124,8 @@ public class HomeFragment extends Fragment {
         mIcon.setColorFilter(ContextCompat.getColor(getActivity(), R.color.color_green_dark),
                 PorterDuff.Mode.MULTIPLY);
         spinnerDropDownImage.setImageDrawable(mIcon);
+
+
         return view;
     }
 
@@ -140,9 +147,13 @@ public class HomeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
     }
 
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        getActivity().getActionBar().setTitle("Welcome To Fraternity");
+    }
 
     @Override
     public void onDetach() {
