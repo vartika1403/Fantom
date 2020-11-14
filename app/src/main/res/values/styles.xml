@@ -3,20 +3,26 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <!--<item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/mediumPurple</item>
+        <item name="colorAccent">@color/baseColor</item>
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>-->
         <item name="android:actionBarStyle">@style/MyActionBar</item>
 
     </style>
 
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@color/color_green_dark</item>
+        <item name="android:background">@color/mediumPurple</item>
     </style>
 
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/baseColor</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/baseColor</item>
+    </style>
     <style name="spinner_style">
     <item name="android:padding">15dp</item>
-    <item name="android:textColor">@color/color_green_dark</item>
+    <item name="android:textColor">@color/mediumPurple</item>
     <item name="android:dropDownWidth">133dp</item>
     <item name="android:showDividers">none</item>
     <item name="android:dividerHeight">10dp</item>
@@ -28,6 +34,6 @@
     </style>
 
     <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
-        <item name="android:color">@color/navy</item>
+        <item name="android:color">@color/mediumPurple</item>
     </style>
 </resources>

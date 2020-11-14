@@ -68,7 +68,7 @@
         android:textStyle="bold"
         android:textSize="30sp"
         android:background="@drawable/button_background"
-        android:textColor="@color/color_green_dark"
+        android:textColor="@color/mediumPurple"
         android:text="@string/join_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -79,8 +79,13 @@ public class SearchFragment extends Fragment implements SearchInterface{
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         notAvailableText =  (TextView)view.findViewById(R.id.not_available_text);
         detailObjectList = new ArrayList<>();
+
+        //show progress dialog
+      //  showProgressDialog();
+        //dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
         dialog = ProgressDialog.show(getActivity(), "",
                 "Loading. Please wait...", true);
+       // dialog.addContentView();
         //initialize recyclerview and adapter
      //   initRecyclerView();
         // subscribe live data to get data from ViewModel
@@ -96,6 +101,33 @@ public class SearchFragment extends Fragment implements SearchInterface{
         firebaseAnalytics.setMinimumSessionDuration(1000);
         return view;
     }
+
+/*
+    private void showProgressDialog() {
+        ProgressDialogLayout progressDialogLayout = (ProgressDialogLayout) getActivity().getLayoutInflater().inflate(R.layout.progress_dialog_layout, null);
+
+        progressDialog.setCancelable(false);
+
+        progressDialogLayout.setTitle(title);
+        progressDialogLayout.setMessage(message);
+        progressDialogLayout.setButton(getString(R.string.word_cancel), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                serviceConnection.scheduleTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        serviceConnection.getConnectionService().endService();
+                    }
+                });
+                progressDialog.dismiss();
+                generateInvalidSnackBar(view, getString(R.string.connection_cancelled)).show();
+                loginProgressDialog = null;
+            }
+        });
+        progressDialog.show();
+        progressDialog.setContentView(progressDialogLayout);
+    }
+*/
 
     private void initRecyclerView() {
         adapter = new EntityListAdapter(detailObjectList, context) ;

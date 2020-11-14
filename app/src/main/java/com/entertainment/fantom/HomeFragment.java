@@ -152,7 +152,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        getActivity().getActionBar().setTitle("Welcome To Fraternity");
     }
 
     @Override

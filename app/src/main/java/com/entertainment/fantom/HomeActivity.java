@@ -1,18 +1,21 @@
 package com.entertainment.fantom;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.FrameLayout;
+
+import com.google.firebase.database.collection.LLRBNode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,12 +35,21 @@ public class HomeActivity extends AppCompatActivity {
       //  getActionBar().setDisplayHomeAsUpEnabled(true);
         loadHomeFragment();
 
-        ActionBar actionBar = getActionBar();
+
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        ActionBar actionBar = getSupportActionBar();
+
         Log.d(TAG, "action bar, " + actionBar);
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setBackgroundDrawable(new ColorDrawable(Color.RED));
+            int myColor = ContextCompat.getColor(this, R.color.baseColor);
+         //   actionBar.setBackgroundDrawable(new ColorDrawable(myColor));
         }
+        return super.onPrepareOptionsMenu(menu);
+
     }
 
     private void loadHomeFragment() {
