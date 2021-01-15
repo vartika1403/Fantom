@@ -2,20 +2,15 @@ package com.entertainment.fantom;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.FrameLayout;
 
-import com.google.firebase.database.collection.LLRBNode;
+import com.entertainment.fantom.fragment.HomeFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +40,6 @@ public class HomeActivity extends AppCompatActivity {
         Log.d(TAG, "action bar, " + actionBar);
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            int myColor = ContextCompat.getColor(this, R.color.baseColor);
-         //   actionBar.setBackgroundDrawable(new ColorDrawable(myColor));
         }
         return super.onPrepareOptionsMenu(menu);
 
@@ -72,21 +65,9 @@ public class HomeActivity extends AppCompatActivity {
         }
         if (count == 0 ) {
             super.onBackPressed();
-            //additional code
         } else {
             getFragmentManager().popBackStack();
         }
 
     }
-
-/*
-    protected loadSearchFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment =  SearchFragment.newInstance()
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.home_fragment, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-*/
 }

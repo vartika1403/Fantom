@@ -1,4 +1,4 @@
-package com.entertainment.fantom;
+package com.entertainment.fantom.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,6 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.entertainment.fantom.DetailObject;
+import com.entertainment.fantom.adapter.EntityListAdapter;
+import com.entertainment.fantom.R;
+import com.entertainment.fantom.SearchInterface;
+import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
@@ -30,14 +35,14 @@ import java.util.List;
  * created by vartika sharma
  * create an instance of this Search fragment.
  */
-public class SearchFragment extends Fragment implements SearchInterface{
+public class SearchFragment extends Fragment implements SearchInterface {
     private static final String TAG = SearchFragment.class.getSimpleName();
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private HomeViewModel homeViewModel;
     private String entityName;
     private RecyclerView recyclerView;
-    private  EntityListAdapter adapter;
+    private EntityListAdapter adapter;
     private SearchFragment context;
     private ProgressDialog dialog;
     private FirebaseAnalytics firebaseAnalytics;
@@ -67,6 +72,7 @@ public class SearchFragment extends Fragment implements SearchInterface{
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -128,17 +134,9 @@ public class SearchFragment extends Fragment implements SearchInterface{
         progressDialog.setContentView(progressDialogLayout);
     }
 */
-
-    private void initRecyclerView() {
-        adapter = new EntityListAdapter(detailObjectList, context) ;
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void subscribeToLiveData() {
-        homeViewModel.getDataFromFirebase().observe(this, detailObjectList -> {
+        homeViewModel.getDataFromFirebase().observe(getViewLifecycleOwner(), detailObjectList -> {
             if (detailObjectList ==null || detailObjectList.size() == 0) {
                 notAvailableText.setVisibility(View.VISIBLE);
             } else {
@@ -146,7 +144,6 @@ public class SearchFragment extends Fragment implements SearchInterface{
             }
             adapter = new EntityListAdapter(detailObjectList, context) ;
             recyclerView.setHasFixedSize(true);
-          // detailObjectList.addAll(detailObjectList);
              linearLayoutManager = new LinearLayoutManager(getActivity());
             linearLayoutManager.setSmoothScrollbarEnabled(true);
             linearLayoutManager.onRestoreInstanceState(recyclerViewState);
@@ -154,17 +151,7 @@ public class SearchFragment extends Fragment implements SearchInterface{
 
             recyclerView.setAdapter(adapter);
             dialog.dismiss();
-           // recyclerView.setAdapter(adapter);
         });
-
-/*
-        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-
-            }
-        });
-*/
     }
 
     @Override
@@ -186,15 +173,6 @@ public class SearchFragment extends Fragment implements SearchInterface{
                 return true;
         }
         return false;
-    }
-
-    private void printBackStack() {
-    }
-
-    public void removeOrHideCurFragOnBack(FragmentTransaction fragmentTransaction, Fragment fragment) {
-        if(fragment == null)
-            return;
-        fragmentTransaction.remove(fragment);
     }
 
     @Override
@@ -223,19 +201,5 @@ public class SearchFragment extends Fragment implements SearchInterface{
             state.putParcelable("state", recyclerViewState);
         }
     }
-
-   /* @Override
-    public void onRestoreInstanceState(Bundle state) {
-        super.onRestoreInstanceState(state);
-
-        // Retrieve list state and list/item positions
-        if(state != null)
-            mListState = state.getParcelable(LIST_STATE_KEY);
-    }*/
-
-   // @Override
-    //public void onRestoreInstanceState() {
-      //  super.onViewStateRestored();
-    //}
 }
 

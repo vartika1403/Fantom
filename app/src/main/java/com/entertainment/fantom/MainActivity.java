@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.entertainment.fantom.adapter.NoteAdapter;
+
 import java.util.List;
 
 

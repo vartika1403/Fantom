@@ -1,4 +1,4 @@
-package com.entertainment.fantom;
+package com.entertainment.fantom.fragment;
 
 import android.content.Context;
 import android.net.Uri;
@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.entertainment.fantom.DetailObject;
+import com.entertainment.fantom.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;

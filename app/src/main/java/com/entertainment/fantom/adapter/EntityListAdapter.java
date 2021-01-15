@@ -1,4 +1,4 @@
-package com.entertainment.fantom;
+package com.entertainment.fantom.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.entertainment.fantom.DetailObject;
+import com.entertainment.fantom.R;
+import com.entertainment.fantom.SearchInterface;
+import com.entertainment.fantom.fragment.SearchFragment;
 
 import java.util.List;
 

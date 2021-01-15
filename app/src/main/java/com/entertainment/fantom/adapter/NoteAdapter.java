@@ -1,4 +1,4 @@
-package com.entertainment.fantom;
+package com.entertainment.fantom.adapter;
 
 import android.view.ViewGroup;
 
