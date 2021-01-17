@@ -82,8 +82,9 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
-        ButterKnife.bind(this, view);
+        if ((AppCompatActivity)getActivity() != null &&  ((AppCompatActivity) getActivity()).getSupportActionBar() != null)
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        ButterKnife.bind(this, view);
 
         //logs view event for search fragment
         firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
@@ -100,6 +101,7 @@ public class DetailFragment extends Fragment {
 
         // set data
         setData();
+        setHasOptionsMenu(true);
         return view;
     }
 

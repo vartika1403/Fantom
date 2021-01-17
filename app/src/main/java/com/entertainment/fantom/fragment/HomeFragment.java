@@ -1,16 +1,19 @@
 package com.entertainment.fantom.fragment;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -76,6 +79,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        setHasOptionsMenu(true);
         ButterKnife.bind(this,view);
 
         //R.id.spinner_layout;
@@ -127,6 +131,14 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() != null) {
+            getActivity().invalidateOptionsMenu();
+        }
+    }
+
     //move to searchFragment
     @OnClick(R.id.button)
     public void clickButton() {
@@ -137,8 +149,9 @@ public class HomeFragment extends Fragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         Fragment fragment =  SearchFragment.newInstance(selectedItem, "");
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        String tag = fragment.getClass().getName();
         fragmentTransaction.replace(R.id.home_fragment, fragment);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commit();
     }
 
@@ -150,6 +163,13 @@ public class HomeFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        Log.d(TAG, "onPrepartionMenu of Home: " );
+        ActionBar actionBar= getActivity().getActionBar();
+        Log.d(TAG, "action bar, " + actionBar);
+        if (actionBar != null) {
+            actionBar.show();
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -14,7 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +38,7 @@ import java.util.List;
  * created by vartika sharma
  * create an instance of this Search fragment.
  */
-public class SearchFragment extends Fragment implements SearchInterface {
+public class SearchFragment extends HomeFragment implements SearchInterface {
     private static final String TAG = SearchFragment.class.getSimpleName();
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -86,15 +89,8 @@ public class SearchFragment extends Fragment implements SearchInterface {
         notAvailableText =  (TextView)view.findViewById(R.id.not_available_text);
         detailObjectList = new ArrayList<>();
 
-        //show progress dialog
-      //  showProgressDialog();
-        //dialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
         dialog = ProgressDialog.show(getActivity(), "",
                 "Loading. Please wait...", true);
-       // dialog.addContentView();
-        //initialize recyclerview and adapter
-     //   initRecyclerView();
-        // subscribe live data to get data from ViewModel
         subscribeToLiveData();
         //logs view event for search fragment
         firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
@@ -105,35 +101,11 @@ public class SearchFragment extends Fragment implements SearchInterface {
 
         firebaseAnalytics.setAnalyticsCollectionEnabled(true);
         firebaseAnalytics.setMinimumSessionDuration(1000);
+        setHasOptionsMenu(true);
+
         return view;
     }
 
-/*
-    private void showProgressDialog() {
-        ProgressDialogLayout progressDialogLayout = (ProgressDialogLayout) getActivity().getLayoutInflater().inflate(R.layout.progress_dialog_layout, null);
-
-        progressDialog.setCancelable(false);
-
-        progressDialogLayout.setTitle(title);
-        progressDialogLayout.setMessage(message);
-        progressDialogLayout.setButton(getString(R.string.word_cancel), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                serviceConnection.scheduleTask(new Runnable() {
-                    @Override
-                    public void run() {
-                        serviceConnection.getConnectionService().endService();
-                    }
-                });
-                progressDialog.dismiss();
-                generateInvalidSnackBar(view, getString(R.string.connection_cancelled)).show();
-                loginProgressDialog = null;
-            }
-        });
-        progressDialog.show();
-        progressDialog.setContentView(progressDialogLayout);
-    }
-*/
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void subscribeToLiveData() {
         homeViewModel.getDataFromFirebase().observe(getViewLifecycleOwner(), detailObjectList -> {
@@ -185,10 +157,17 @@ public class SearchFragment extends Fragment implements SearchInterface {
              FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
              FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
              Fragment fragment = DetailFragment.newInstance(detailObject);
+             String tag = fragment.getClass().getName();
              fragmentTransaction.replace(R.id.home_fragment, fragment);
-             fragmentTransaction.addToBackStack(null);
+             fragmentTransaction.addToBackStack(TAG);
              fragmentTransaction.commit();
          }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        Log.d(TAG, "onPrepartionMenu of Search: " );
     }
 
     @Override

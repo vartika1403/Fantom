@@ -1,10 +1,11 @@
 package com.entertainment.fantom;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -29,13 +30,11 @@ public class HomeActivity extends AppCompatActivity {
         // Enabling Up / Back navigation
       //  getActionBar().setDisplayHomeAsUpEnabled(true);
         loadHomeFragment();
-
-
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getActionBar();
 
         Log.d(TAG, "action bar, " + actionBar);
         if (actionBar != null) {
@@ -48,25 +47,23 @@ public class HomeActivity extends AppCompatActivity {
     private void loadHomeFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment =  new HomeFragment();
+        String tag = fragment.getClass().getName();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.home_fragment, fragment);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commit();
     }
 
     @Override
     public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
 
-        int count = getFragmentManager().getBackStackEntryCount();
-
-        Log.d(TAG, "count , " + count);
-        if (count == 1) {
-            finish();
-        }
-        if (count == 0 ) {
-            super.onBackPressed();
+         Log.d(TAG, "count , " + count + " fragment name: ");
+        if (count == 1 ) {
+          // super.onBackPressed();
+           finish();
         } else {
-            getFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
         }
 
     }
