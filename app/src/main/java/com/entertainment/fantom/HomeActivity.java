@@ -38,7 +38,8 @@ public class HomeActivity extends AppCompatActivity {
 
         Log.d(TAG, "action bar, " + actionBar);
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.show();
+          //  actionBar.setDisplayHomeAsUpEnabled(true);
         }
         return super.onPrepareOptionsMenu(menu);
 

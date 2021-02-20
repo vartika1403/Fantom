@@ -82,8 +82,8 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
-        if ((AppCompatActivity)getActivity() != null &&  ((AppCompatActivity) getActivity()).getSupportActionBar() != null)
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        setRetainInstance(true);
+
         ButterKnife.bind(this, view);
 
         //logs view event for search fragment
@@ -177,7 +177,8 @@ public class DetailFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-       // ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        if (getActivity() != null &&  ((AppCompatActivity) getActivity()).getSupportActionBar() != null)
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
     }
 

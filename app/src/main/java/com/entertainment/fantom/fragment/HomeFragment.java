@@ -165,10 +165,9 @@ public class HomeFragment extends Fragment {
         super.onPrepareOptionsMenu(menu);
         Log.d(TAG, "onPrepartionMenu of Home: " );
         ActionBar actionBar= getActivity().getActionBar();
-        Log.d(TAG, "action bar, " + actionBar);
+        Log.d(TAG, "onPrepartionMenu action bar, " + actionBar);
         if (actionBar != null) {
             actionBar.show();
-            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
