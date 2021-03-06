@@ -69,8 +69,6 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-           // mParam1 = getArguments().getString(ARG_PARAM1);
-           // mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -106,12 +104,12 @@ public class HomeFragment extends Fragment {
 
         // Spinner Drop down elements
         List<String> categories = new ArrayList<String>();
-        categories.add("Bands");
-        categories.add("Singer");
+        categories.add("Looking for Bands for Events");
+        categories.add("Looking for Singer");
         categories.add("Spinner");
         categories.add("Drummer");
         categories.add("Flute");
-        categories.add("Guitarist");
+        categories.add("Looking for Guitarist");
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),

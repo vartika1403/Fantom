@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.widget.FrameLayout;
 
 import com.entertainment.fantom.fragment.HomeFragment;
+import com.entertainment.fantom.fragment.LoginFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void loadHomeFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment =  new HomeFragment();
+        Fragment fragment =  new LoginFragment();
         String tag = fragment.getClass().getName();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.home_fragment, fragment);
