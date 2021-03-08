@@ -11,5 +11,5 @@
     <string name="verify_sign_in">Verify and Sign In</string>
     <string name="sign_out">sign out</string>
     <string name="log_in">Log in</string>
-    <string name="enter_your_name">Enter your name</string>
+    <string name="enter_phone_number">Enter your phone number</string>
 </resources>
