@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.annotation.NonNull
 
 
-class SharedPrefUtil(context: Context?) {
+class SharedPrefUtil(val context: Context?) {
 
     val sharedPrefs = context?.applicationContext
            ?.getSharedPreferences(PREFERENCES_NAME, PRIVATE_MODE)
@@ -16,6 +16,9 @@ class SharedPrefUtil(context: Context?) {
 
      }
 
+    fun getContext() {
+        context
+    }
     @NonNull
     private fun getEditor(): SharedPreferences.Editor? {
         return sharedPrefs!!.edit()

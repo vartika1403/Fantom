@@ -152,6 +152,7 @@ class LoginFragment : Fragment() {
                 // we are setting that code to
                 // our OTP edittext field.
                 enterNameText.setText(code)
+                Toast.makeText(context,"verification completed:  ${code}",Toast.LENGTH_SHORT).show();
 
                 // after setting this code
                 // to OTP edittext field we
