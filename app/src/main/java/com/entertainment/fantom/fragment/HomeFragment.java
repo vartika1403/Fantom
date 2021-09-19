@@ -167,6 +167,8 @@ public class HomeFragment extends Fragment {
         ActionBar actionBar= getActivity().getActionBar();
         Log.d(TAG, "onPrepartionMenu action bar, " + actionBar);
         if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setLogo(R.drawable.splash);
             actionBar.show();
         }
     }

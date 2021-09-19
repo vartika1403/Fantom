@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.entertainment.fantom.DetailObject;
 import com.entertainment.fantom.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +30,8 @@ import com.google.firebase.storage.StorageReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 
 public class DetailFragment extends Fragment {
@@ -166,12 +171,14 @@ public class DetailFragment extends Fragment {
             });
             Glide.with(this /* context */)
                     .load(storageRef)
-                    .centerCrop()
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
                     .placeholder(R.drawable.splash)
+                    .apply(RequestOptions.bitmapTransform(new
+                            RoundedCorners(getResources().getDimensionPixelSize(R.dimen.corner))))
+                    .transition(withCrossFade(1000))
+                    .centerCrop()
                     .into(bandImage);
-        } /*else {
-            bandImage.setVisibility(View.GONE);
-        }*/
+        }
     }
 
     @Override
@@ -179,7 +186,6 @@ public class DetailFragment extends Fragment {
         super.onPrepareOptionsMenu(menu);
         if (getActivity() != null &&  ((AppCompatActivity) getActivity()).getSupportActionBar() != null)
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-
     }
 
 

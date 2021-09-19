@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -125,6 +126,15 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
             recyclerView.setAdapter(adapter);
             dialog.dismiss();
         });
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+        }, 10000);
     }
 
     @Override
