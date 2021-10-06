@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.entertainment.fantom.Conf;
-import com.entertainment.fantom.DetailObject;
+import com.entertainment.fantom.ProfileObject;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class HomeViewModel extends ViewModel {
     public static final String TAG = HomeViewModel.class.getSimpleName();
-    public MutableLiveData<List<DetailObject>> entityData;
+    public MutableLiveData<List<ProfileObject>> entityData;
 
     // Write a message to the database
     FirebaseDatabase database;
@@ -49,19 +49,19 @@ public class HomeViewModel extends ViewModel {
          databaseReference.child(entityName).addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                 List<DetailObject> entityList = new ArrayList<>();
+                 List<ProfileObject> entityList = new ArrayList<>();
                  for (DataSnapshot data : dataSnapshot.getChildren()) {
                      Log.d(TAG, "snapshot data 1,"  + ", key," + data.getKey());
                      try {
-                         DetailObject detailObject = data.getValue(DetailObject.class);
+                         ProfileObject profileObject = data.getValue(ProfileObject.class);
                          //JSONObject jsonObject = new JSONObject(data.getValue(DetailObject.class));
-                         detailObject.setName(data.getKey());
-                         String fbLink = detailObject.getFbLink();
-                         String webLink = detailObject.getWebLink();
-                         String imageUrl = detailObject.getImage();
+                         profileObject.setName(data.getKey());
+                         String fbLink = profileObject.getFbLink();
+                         String webLink = profileObject.getWebLink();
+                         String imageUrl = profileObject.getImage();
                          Log.d(TAG, "snapshot data 1 2," + fbLink+ ", webLink," + webLink +
                                  " image url," + imageUrl);
-                         entityList.add(detailObject);
+                         entityList.add(profileObject);
                      } catch (Exception e) {
                          e.printStackTrace();
                      }
@@ -78,7 +78,7 @@ public class HomeViewModel extends ViewModel {
          });
     }
 
-    public LiveData<List<DetailObject>> getDataFromFirebase(){
+    public LiveData<List<ProfileObject>> getDataFromFirebase(){
           return entityData;
     }
 }

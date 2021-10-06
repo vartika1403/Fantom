@@ -3,7 +3,7 @@ package com.entertainment.fantom;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DetailObject implements Parcelable {
+public class ProfileObject implements Parcelable {
     private String fbLink;
     private String name;
     private String webLink;
@@ -19,17 +19,17 @@ public class DetailObject implements Parcelable {
     private String image;
     private String email;
 
-    public DetailObject() {
+    public ProfileObject() {
 
     }
-    public DetailObject(String name,String fbLink,  String webLink, String image) {
+    public ProfileObject(String name, String fbLink, String webLink, String image) {
         this.fbLink = fbLink;
         this.name = name;
         this.webLink = webLink;
         this.image = image;
     }
 
-    protected DetailObject(Parcel in) {
+    protected ProfileObject(Parcel in) {
         fbLink = in.readString();
         name = in.readString();
         webLink = in.readString();
@@ -37,15 +37,15 @@ public class DetailObject implements Parcelable {
         email = in.readString();
     }
 
-    public static final Creator<DetailObject> CREATOR = new Creator<DetailObject>() {
+    public static final Creator<ProfileObject> CREATOR = new Creator<ProfileObject>() {
         @Override
-        public DetailObject createFromParcel(Parcel in) {
-            return new DetailObject(in);
+        public ProfileObject createFromParcel(Parcel in) {
+            return new ProfileObject(in);
         }
 
         @Override
-        public DetailObject[] newArray(int size) {
-            return new DetailObject[size];
+        public ProfileObject[] newArray(int size) {
+            return new ProfileObject[size];
         }
     };
 

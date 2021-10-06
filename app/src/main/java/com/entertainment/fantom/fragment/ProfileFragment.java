@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.entertainment.fantom.DetailObject;
+import com.entertainment.fantom.ProfileObject;
 import com.entertainment.fantom.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,12 +34,11 @@ import butterknife.ButterKnife;
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 
-public class DetailFragment extends Fragment {
-    private static final String TAG = DetailFragment.class.getSimpleName();
+public class ProfileFragment extends Fragment {
+    private static final String TAG = ProfileFragment.class.getSimpleName();
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private DetailObject detailObject;
+    private ProfileObject profileObject;
     private FirebaseAnalytics firebaseAnalytics;
 
     @BindView(R.id.image)
@@ -61,14 +60,14 @@ public class DetailFragment extends Fragment {
     @BindView(R.id.webLinkText)
     TextView webLinkText;
 
-    public DetailFragment() {
+    public ProfileFragment() {
         // Required empty public constructor
     }
 
-    public static DetailFragment newInstance(DetailObject detailObject) {
-        DetailFragment fragment = new DetailFragment();
+    public static ProfileFragment newInstance(ProfileObject profileObject) {
+        ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_PARAM1, detailObject);
+        args.putParcelable(ARG_PARAM1, profileObject);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,7 +77,7 @@ public class DetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             //if (savedInstanceState != null)
-            detailObject = getArguments().getParcelable(ARG_PARAM1);
+            profileObject = getArguments().getParcelable(ARG_PARAM1);
         }
     }
 
@@ -111,41 +110,41 @@ public class DetailFragment extends Fragment {
     }
 
     private void setData() {
-        if (detailObject != null && detailObject.getName() != null
-                && !detailObject.getName().isEmpty()) {
+        if (profileObject != null && profileObject.getName() != null
+                && !profileObject.getName().isEmpty()) {
             entityName.setVisibility(View.VISIBLE);
             name.setVisibility(View.VISIBLE);
-            name.setText(detailObject.getName());
+            name.setText(profileObject.getName());
         } else {
             name.setVisibility(View.GONE);
             entityName.setVisibility(View.GONE);
         }
 
-        if (detailObject != null && detailObject.getEmail() != null
-                && !detailObject.getEmail().isEmpty()) {
+        if (profileObject != null && profileObject.getEmail() != null
+                && !profileObject.getEmail().isEmpty()) {
             email.setVisibility(View.VISIBLE);
             emailText.setVisibility(View.VISIBLE);
-            emailText.setText(detailObject.getEmail());
+            emailText.setText(profileObject.getEmail());
         } else {
             emailText.setVisibility(View.GONE);
             email.setVisibility(View.GONE);
         }
 
-        if (detailObject != null && detailObject.getFbLink() != null
-                && !detailObject.getFbLink().isEmpty()) {
+        if (profileObject != null && profileObject.getFbLink() != null
+                && !profileObject.getFbLink().isEmpty()) {
             fbLink.setVisibility(View.VISIBLE);
             fbLinkText.setVisibility(View.VISIBLE);
-            fbLinkText.setText(detailObject.getFbLink());
+            fbLinkText.setText(profileObject.getFbLink());
         } else {
             fbLinkText.setVisibility(View.GONE);
             fbLink.setVisibility(View.GONE);
         }
 
-        if (detailObject != null && detailObject.getWebLink() != null
-                &&!detailObject.getWebLink().isEmpty()) {
+        if (profileObject != null && profileObject.getWebLink() != null
+                &&!profileObject.getWebLink().isEmpty()) {
             webLink.setVisibility(View.VISIBLE);
             webLinkText.setVisibility(View.VISIBLE);
-            webLinkText.setText(detailObject.getWebLink());
+            webLinkText.setText(profileObject.getWebLink());
         } else {
             webLinkText.setVisibility(View.GONE);
             webLink.setVisibility(View.GONE);
@@ -153,12 +152,12 @@ public class DetailFragment extends Fragment {
     }
 
     private void setImageToView() {
-        if (detailObject != null && detailObject.getImage() != null
-                && !detailObject.getImage().isEmpty()) {
+        if (profileObject != null && profileObject.getImage() != null
+                && !profileObject.getImage().isEmpty()) {
             bandImage.setVisibility(View.VISIBLE);
 
             // Create a storage reference from our app
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(detailObject.getImageUrl());
+            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(profileObject.getImageUrl());
 
             Log.d(TAG, "storageRef, " + storageRef.getDownloadUrl());
            // storageRef.

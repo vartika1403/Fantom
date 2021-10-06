@@ -25,16 +25,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.entertainment.fantom.DetailObject;
+import com.entertainment.fantom.ProfileObject;
 import com.entertainment.fantom.adapter.EntityListAdapter;
 import com.entertainment.fantom.R;
 import com.entertainment.fantom.SearchInterface;
 import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
 /**
  * created by vartika sharma
@@ -51,10 +50,10 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
     private SearchFragment context;
     private ProgressDialog dialog;
     private FirebaseAnalytics firebaseAnalytics;
-    private List<DetailObject> detailObjectList;
     private Parcelable recyclerViewState;
     private LinearLayoutManager linearLayoutManager;
     private TextView notAvailableText;
+
 
     public SearchFragment() {
         // Required empty public constructor
@@ -89,13 +88,11 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         homeViewModel.setEntityName(entityName);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         notAvailableText =  (TextView)view.findViewById(R.id.not_available_text);
-        detailObjectList = new ArrayList<>();
-
         dialog = ProgressDialog.show(getActivity(), "",
                 "Loading. Please wait...", true);
         subscribeToLiveData();
         //logs view event for search fragment
-        firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        firebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
         //logs view event
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
@@ -118,7 +115,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
             }
             adapter = new EntityListAdapter(detailObjectList, context) ;
             recyclerView.setHasFixedSize(true);
-             linearLayoutManager = new LinearLayoutManager(getActivity());
+            linearLayoutManager = new LinearLayoutManager(getActivity());
             linearLayoutManager.setSmoothScrollbarEnabled(true);
             linearLayoutManager.onRestoreInstanceState(recyclerViewState);
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -128,11 +125,9 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         });
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+        handler.postDelayed(() -> {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
             }
         }, 10000);
     }
@@ -159,16 +154,15 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
     }
 
     @Override
-    public void setData(DetailObject detailObject) {
-         if (detailObject != null) {
+    public void setData(ProfileObject profileObject) {
+         if (profileObject != null) {
              Bundle bundle = new Bundle();
              bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
-             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, detailObject.getName());
+             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, profileObject.getName());
              firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+             FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
              FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-             Fragment fragment = DetailFragment.newInstance(detailObject);
-             String tag = fragment.getClass().getName();
+             Fragment fragment = ProfileFragment.newInstance(profileObject);
              fragmentTransaction.replace(R.id.home_fragment, fragment);
              fragmentTransaction.addToBackStack(TAG);
              fragmentTransaction.commit();
@@ -178,13 +172,12 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        Log.d(TAG, "onPrepartionMenu of Search: " );
         if (getActivity() != null &&  ((AppCompatActivity) getActivity()).getSupportActionBar() != null)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+            Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).show();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle state) {
+    public void onSaveInstanceState(@NotNull Bundle state) {
         super.onSaveInstanceState(state);
 
         // Save list state
