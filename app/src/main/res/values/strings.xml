@@ -5,4 +5,8 @@
     <string name="spinner_title">Select Category</string>
     <string name="title">Where Musicians and Bands meet to make music</string>
     <string name="join_text">JOIN</string>
+    <string name="enter_user_name">Enter Employee Name</string>
+    <string name="enter_user_phone_number">Enter employee phone number</string>
+    <string name="enter_employee_address">Enter employee address</string>
+    <string name="enter_user_address">Add employee details</string>
 </resources>
