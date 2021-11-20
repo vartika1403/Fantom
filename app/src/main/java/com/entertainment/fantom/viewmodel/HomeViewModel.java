@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.entertainment.fantom.Conf;
-import com.entertainment.fantom.ProfileObject;
+import com.entertainment.fantom.data.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class HomeViewModel extends ViewModel {
     public static final String TAG = HomeViewModel.class.getSimpleName();
-    public MutableLiveData<List<ProfileObject>> entityData;
+    public MutableLiveData<List<User>> entityData;
 
     // Write a message to the database
     FirebaseDatabase database;
@@ -49,11 +49,11 @@ public class HomeViewModel extends ViewModel {
          databaseReference.child(entityName).addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                 List<ProfileObject> entityList = new ArrayList<>();
+                 List<User> entityList = new ArrayList<>();
                  for (DataSnapshot data : dataSnapshot.getChildren()) {
-                     Log.d(TAG, "snapshot data 1,"  + ", key," + data.getKey());
+                     Log.d(TAG, "snapshot data 1,"  + ", key," + data.getKey() + " value: " + data.getValue());
                      try {
-                         ProfileObject profileObject = data.getValue(ProfileObject.class);
+                         User profileObject = data.getValue(User.class);
                          //JSONObject jsonObject = new JSONObject(data.getValue(DetailObject.class));
                          profileObject.setName(data.getKey());
                          String fbLink = profileObject.getFbLink();
@@ -78,7 +78,7 @@ public class HomeViewModel extends ViewModel {
          });
     }
 
-    public LiveData<List<ProfileObject>> getDataFromFirebase(){
+    public LiveData<List<User>> getDataFromFirebase(){
           return entityData;
     }
 }

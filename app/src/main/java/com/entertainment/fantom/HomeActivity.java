@@ -27,8 +27,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        // Enabling Up / Back navigation
-      //  getActionBar().setDisplayHomeAsUpEnabled(true);
         loadHomeFragment();
     }
 
@@ -39,7 +37,6 @@ public class HomeActivity extends AppCompatActivity {
         Log.d(TAG, "action bar, " + actionBar);
         if (actionBar != null) {
             actionBar.show();
-          //  actionBar.setDisplayHomeAsUpEnabled(true);
         }
         return super.onPrepareOptionsMenu(menu);
 
@@ -59,9 +56,8 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         int count = getSupportFragmentManager().getBackStackEntryCount();
 
-         Log.d(TAG, "count , " + count + " fragment name: ");
+        Log.d(TAG, "count , " + count + " fragment name: ");
         if (count == 1 ) {
-          // super.onBackPressed();
            finish();
         } else {
             getSupportFragmentManager().popBackStack();

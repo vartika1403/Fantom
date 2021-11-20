@@ -102,12 +102,9 @@ public class HomeFragment extends Fragment {
 
         // Spinner Drop down elements
         List<String> categories = new ArrayList<String>();
-        categories.add("Looking for Bands for Events");
         categories.add("Looking for Guitarist");
         categories.add("Looking for male singer");
         categories.add("Looking for female singer");
-        categories.add("Flute");
-        categories.add("Guitarist");
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),

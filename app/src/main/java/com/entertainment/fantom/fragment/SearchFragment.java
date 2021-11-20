@@ -29,6 +29,7 @@ import com.entertainment.fantom.ProfileObject;
 import com.entertainment.fantom.adapter.EntityListAdapter;
 import com.entertainment.fantom.R;
 import com.entertainment.fantom.SearchInterface;
+import com.entertainment.fantom.data.User;
 import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -154,7 +155,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
     }
 
     @Override
-    public void setData(ProfileObject profileObject) {
+    public void setData(User profileObject) {
          if (profileObject != null) {
              Bundle bundle = new Bundle();
              bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);

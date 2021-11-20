@@ -20,10 +20,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.entertainment.fantom.ProfileObject;
 import com.entertainment.fantom.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.entertainment.fantom.data.User;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -38,7 +36,7 @@ public class ProfileFragment extends Fragment {
     private static final String TAG = ProfileFragment.class.getSimpleName();
     private static final String ARG_PARAM1 = "param1";
 
-    private ProfileObject profileObject;
+    private User profileObject;
     private FirebaseAnalytics firebaseAnalytics;
 
     @BindView(R.id.image)
@@ -64,7 +62,7 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ProfileFragment newInstance(ProfileObject profileObject) {
+    public static ProfileFragment newInstance(User profileObject) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM1, profileObject);
@@ -110,8 +108,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setData() {
-        if (profileObject != null && profileObject.getName() != null
-                && !profileObject.getName().isEmpty()) {
+        if (profileObject != null && !profileObject.getName().isEmpty()) {
             entityName.setVisibility(View.VISIBLE);
             name.setVisibility(View.VISIBLE);
             name.setText(profileObject.getName());
@@ -120,8 +117,7 @@ public class ProfileFragment extends Fragment {
             entityName.setVisibility(View.GONE);
         }
 
-        if (profileObject != null && profileObject.getEmail() != null
-                && !profileObject.getEmail().isEmpty()) {
+        if (profileObject != null && !profileObject.getEmail().isEmpty()) {
             email.setVisibility(View.VISIBLE);
             emailText.setVisibility(View.VISIBLE);
             emailText.setText(profileObject.getEmail());
@@ -130,8 +126,7 @@ public class ProfileFragment extends Fragment {
             email.setVisibility(View.GONE);
         }
 
-        if (profileObject != null && profileObject.getFbLink() != null
-                && !profileObject.getFbLink().isEmpty()) {
+        if (profileObject != null && !profileObject.getFbLink().isEmpty()) {
             fbLink.setVisibility(View.VISIBLE);
             fbLinkText.setVisibility(View.VISIBLE);
             fbLinkText.setText(profileObject.getFbLink());
@@ -140,8 +135,7 @@ public class ProfileFragment extends Fragment {
             fbLink.setVisibility(View.GONE);
         }
 
-        if (profileObject != null && profileObject.getWebLink() != null
-                &&!profileObject.getWebLink().isEmpty()) {
+        if (profileObject != null && !profileObject.getWebLink().isEmpty()) {
             webLink.setVisibility(View.VISIBLE);
             webLinkText.setVisibility(View.VISIBLE);
             webLinkText.setText(profileObject.getWebLink());
@@ -152,31 +146,29 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setImageToView() {
-        if (profileObject != null && profileObject.getImage() != null
-                && !profileObject.getImage().isEmpty()) {
-            bandImage.setVisibility(View.VISIBLE);
+        if (profileObject != null) {
+            if (!profileObject.getImage().isEmpty()) {
+                bandImage.setVisibility(View.VISIBLE);
 
-            // Create a storage reference from our app
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(profileObject.getImageUrl());
+                // Create a storage reference from our app
+                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(profileObject.getImage());
 
-            Log.d(TAG, "storageRef, " + storageRef.getDownloadUrl());
-           // storageRef.
-            // Load the image using Glide
-            storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
+                Log.d(TAG, "storageRef, " + storageRef.getDownloadUrl());
+                // storageRef.
+                // Load the image using Glide
+                storageRef.getDownloadUrl().addOnCompleteListener(task -> {
 
-                }
-            });
-            Glide.with(this /* context */)
-                    .load(storageRef)
-                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                    .placeholder(R.drawable.splash)
-                    .apply(RequestOptions.bitmapTransform(new
-                            RoundedCorners(getResources().getDimensionPixelSize(R.dimen.corner))))
-                    .transition(withCrossFade(1000))
-                    .centerCrop()
-                    .into(bandImage);
+                });
+                Glide.with(this /* context */)
+                        .load(storageRef)
+                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                        .placeholder(R.drawable.splash)
+                        .apply(RequestOptions.bitmapTransform(new
+                                RoundedCorners(getResources().getDimensionPixelSize(R.dimen.corner))))
+                        .transition(withCrossFade(500))
+                        .centerCrop()
+                        .into(bandImage);
+            }
         }
     }
 

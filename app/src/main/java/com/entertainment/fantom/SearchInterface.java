@@ -1,5 +1,7 @@
 package com.entertainment.fantom;
 
+import com.entertainment.fantom.data.User;
+
 public interface SearchInterface {
-     void setData(ProfileObject profileObject);
+     void setData(User profileObject);
 }

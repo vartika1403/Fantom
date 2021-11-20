@@ -7,9 +7,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.entertainment.fantom.ProfileObject;
 import com.entertainment.fantom.R;
 import com.entertainment.fantom.SearchInterface;
+import com.entertainment.fantom.data.User;
 import com.entertainment.fantom.fragment.SearchFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,10 +18,10 @@ import java.util.List;
 
 public class EntityListAdapter extends RecyclerView.Adapter<EntityListAdapter.EntityViewHolder> {
     private static final String TAG = EntityListAdapter.class.getSimpleName();
-    private final List<ProfileObject> profileObjectList;
+    private final List<User> profileObjectList;
     private SearchFragment context;
 
-    public EntityListAdapter(List<ProfileObject> profileObjectList, SearchFragment context) {
+    public EntityListAdapter(List<User> profileObjectList, SearchFragment context) {
         this.profileObjectList = profileObjectList;
         this.context = context;
     }
