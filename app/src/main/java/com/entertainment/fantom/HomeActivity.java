@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.FrameLayout;
 
+import com.entertainment.fantom.fragment.CreateProfile;
 import com.entertainment.fantom.fragment.HomeFragment;
 
 import butterknife.BindView;
@@ -44,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void loadHomeFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment =  new HomeFragment();
+        Fragment fragment =  new CreateProfile();
         String tag = fragment.getClass().getName();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.home_fragment, fragment);
