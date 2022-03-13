@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import butterknife.ButterKnife
 import com.entertainment.fantom.R
@@ -23,7 +24,10 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken
 import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
-import kotlinx.android.synthetic.main.fragment_login.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.util.concurrent.TimeUnit
 
 
@@ -54,7 +58,7 @@ class LoginFragment : Fragment() {
     private val isVerified:Boolean = false
     private lateinit var auth:FirebaseAuth
     private lateinit var verificationId:String
-    private lateinit var enterNameText:EditText
+    private lateinit var enterPhoneNo:EditText
     private var sharedPreferences: SharedPreferences? = context?.getSharedPreferences("app", Context.MODE_PRIVATE)
 
     //Creating editor to store values to shared preferences
@@ -69,21 +73,21 @@ class LoginFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         isLogin = sharedPreferences?.getBoolean("isLogin", false)
         val logInButton = view.findViewById<Button>(R.id.logInButton)
-        enterNameText = view.findViewById<EditText>(R.id.enterNameText)
+        enterPhoneNo = view.findViewById<EditText>(R.id.enterPhoneNo)
         logInButton.text = "Get Otp"
         //called when text is entered
        // addEnterTextListener()
         logInButton.setOnClickListener {
             // below line is for checking weather the user
             // has entered his mobile number or not.
-            if (TextUtils.isEmpty(enterNameText.getText().toString())) {
+            if (TextUtils.isEmpty(enterPhoneNo.getText().toString())) {
                 // when mobile number text field is empty
                 // displaying a toast message.
                 Toast.makeText(context, "Please enter a valid phone number.", Toast.LENGTH_SHORT).show()
             } else {
                 // if the text field is not empty we are calling our
                 // send OTP method for getting OTP from Firebase.
-                val phone = "+91" + enterNameText.getText().toString()
+                val phone = "+91" + enterPhoneNo.getText().toString()
                 sendVerificationCode(phone)
             }
         }
@@ -107,7 +111,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun addEnterTextListener() {
-        enterNameText.addTextChangedListener(object : TextWatcher {
+        enterPhoneNo.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
@@ -151,7 +155,7 @@ class LoginFragment : Fragment() {
                 // if the code is not null then
                 // we are setting that code to
                 // our OTP edittext field.
-                enterNameText.setText(code)
+                enterPhoneNo.setText(code)
                 Toast.makeText(context,"verification completed:  ${code}",Toast.LENGTH_SHORT).show();
 
                 // after setting this code
@@ -185,7 +189,43 @@ class LoginFragment : Fragment() {
     }
 
     private fun signInWithCredential(credential: PhoneAuthCredential) {
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val num = task.result?.user?.phoneNumber
+                    FirebaseDatabase.getInstance().getReference("users").orderByChild("phoneNumber")
+                        .equalTo(num).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(@NonNull dataSnapshot: DataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                   /* val intent = Intent(
+                                        this@VerifyPhoneActivity,
+                                        ProfileActivity::class.java
+                                    )
+                                    intent.flags =
+                                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    startActivity(intent)*/
+                                } else {
+                                    FirebaseDatabase.getInstance().getReference("users").push()
+                                        .child("phoneNumber").setValue(num).addOnSuccessListener {
+                                          /*  val intent = Intent(
+                                                this@VerifyPhoneActivity,
+                                                WelcomeActivity::class.java
+                                            )
+                                            startActivity(intent)*/
+                                        }
+                                }
+                            }
 
+                            override fun onCancelled(@NonNull databaseError: DatabaseError) {}
+                        })
+                } else {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.signin_failure_message),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
     }
 
 

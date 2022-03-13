@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:163114183350:android:742568e6b329564d",
+        "mobilesdk_app_id": "1:163114183350:android:ee99010e5bd5bb22f4d417",
         "android_client_info": {
           "package_name": "com.entertainment.fantom"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "163114183350-5tg1v00i119ch3kn6v2111asvrnq397m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.entertainment.fantom",
+            "certificate_hash": "fdd4190a1cad18595001749c12ecf2e78e2b6c34"
+          }
+        },
         {
           "client_id": "163114183350-0q7hm1gic0ejeuspmh66k9bl7seogfcl.apps.googleusercontent.com",
           "client_type": 3

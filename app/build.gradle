@@ -61,11 +61,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     implementation 'com.google.firebase:firebase-iid:20.0.0'
     implementation 'com.google.firebase:firebase-core:17.1.0'
-    implementation 'com.google.firebase:firebase-auth:19.0.0'
 
     //firebase database
     implementation 'com.google.firebase:firebase-database:19.2.0'
     implementation 'com.firebaseui:firebase-ui-storage:4.1.0'
+    implementation 'com.google.firebase:firebase-analytics'
 
     //firebase authentication
     implementation 'com.google.firebase:firebase-auth:19.2.0'
