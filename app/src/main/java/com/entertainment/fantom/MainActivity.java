@@ -34,13 +34,10 @@ public class MainActivity extends AppCompatActivity {
         final NoteAdapter noteAdapter = new NoteAdapter();
         recyclerView.setAdapter(noteAdapter);
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
-            @Override
-            public void onChanged(List<Note> notes) {
-                //update ReyclerView
-               // noteAdapter.setNoteList(notes);
-                Toast.makeText(MainActivity.this, "Update RecyclerVew", Toast.LENGTH_SHORT).show();
-            }
+        noteViewModel.getAllNotes().observe(this, notes -> {
+            //update ReyclerView
+           // noteAdapter.setNoteList(notes);
+            Toast.makeText(MainActivity.this, "Update RecyclerVew", Toast.LENGTH_SHORT).show();
         });
     }
 }

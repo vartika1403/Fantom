@@ -29,6 +29,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,7 +84,7 @@ public class HomeFragment extends Fragment {
         ButterKnife.bind(this,view);
 
         //R.id.spinner_layout;
-        firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        firebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
         //logs view event
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ORIGIN, "HomeFragment");
@@ -95,7 +96,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedItem = (String) adapterView.getItemAtPosition(i);
-
             }
 
             @Override
@@ -105,7 +105,7 @@ public class HomeFragment extends Fragment {
         });
 
         // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
+        List<String> categories = new ArrayList<>();
         categories.add("Looking for Bands for Events");
         categories.add("Looking for Guitarist");
         categories.add("Looking for male singer");
@@ -114,7 +114,7 @@ public class HomeFragment extends Fragment {
         categories.add("Guitarist");
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_text, categories);
 
         // Drop down layout style - list view with radio button
@@ -123,11 +123,10 @@ public class HomeFragment extends Fragment {
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
         Drawable mIcon= ContextCompat.getDrawable(getActivity(), R.mipmap.drop_down);
+        assert mIcon != null;
         mIcon.setColorFilter(ContextCompat.getColor(getActivity(), R.color.color_green_dark),
                 PorterDuff.Mode.MULTIPLY);
         spinnerDropDownImage.setImageDrawable(mIcon);
-
-
         return view;
     }
 
@@ -146,8 +145,8 @@ public class HomeFragment extends Fragment {
         bundle.putString(FirebaseAnalytics.Param.ORIGIN, "HomeFragment");
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, selectedItem);
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        Fragment fragment =  SearchFragment.newInstance(selectedItem, "");
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        Fragment fragment = SearchFragment.newInstance(selectedItem, "");
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         String tag = fragment.getClass().getName();
         fragmentTransaction.replace(R.id.home_fragment, fragment);
@@ -156,7 +155,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
     }
 
@@ -164,7 +163,7 @@ public class HomeFragment extends Fragment {
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         Log.d(TAG, "onPrepartionMenu of Home: " );
-        ActionBar actionBar= getActivity().getActionBar();
+        ActionBar actionBar= Objects.requireNonNull(getActivity()).getActionBar();
         Log.d(TAG, "onPrepartionMenu action bar, " + actionBar);
         if (actionBar != null) {
             actionBar.show();

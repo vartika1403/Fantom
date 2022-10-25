@@ -44,7 +44,6 @@ public class HomeViewModel extends ViewModel {
         Log.d(TAG, "entity name and databaseref, " + entityName + ", " + databaseReference.child(entityName));
     }
 
-
     private void loadDataFromFirebase() {
          databaseReference.child(entityName).addValueEventListener(new ValueEventListener() {
              @Override
@@ -55,6 +54,7 @@ public class HomeViewModel extends ViewModel {
                      try {
                          DetailObject detailObject = data.getValue(DetailObject.class);
                          //JSONObject jsonObject = new JSONObject(data.getValue(DetailObject.class));
+                         assert detailObject != null;
                          detailObject.setName(data.getKey());
                          String fbLink = detailObject.getFbLink();
                          String webLink = detailObject.getWebLink();

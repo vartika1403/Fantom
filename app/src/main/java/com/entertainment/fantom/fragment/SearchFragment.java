@@ -86,8 +86,8 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
 
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         homeViewModel.setEntityName(entityName);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        notAvailableText =  (TextView)view.findViewById(R.id.not_available_text);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        notAvailableText = view.findViewById(R.id.not_available_text);
         detailObjectList = new ArrayList<>();
 
         dialog = ProgressDialog.show(getActivity(), "",

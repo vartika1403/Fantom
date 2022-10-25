@@ -58,14 +58,11 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         int count = getSupportFragmentManager().getBackStackEntryCount();
-
-         Log.d(TAG, "count , " + count + " fragment name: ");
+        Log.d(TAG, "count , " + count + " fragment name: " + this);
         if (count == 1 ) {
-          // super.onBackPressed();
            finish();
         } else {
             getSupportFragmentManager().popBackStack();
         }
-
     }
 }
