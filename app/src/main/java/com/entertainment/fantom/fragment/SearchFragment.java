@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +29,7 @@ import com.entertainment.fantom.DetailObject;
 import com.entertainment.fantom.adapter.EntityListAdapter;
 import com.entertainment.fantom.R;
 import com.entertainment.fantom.SearchInterface;
+import com.entertainment.fantom.utils.Utils;
 import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -84,14 +86,13 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         setRetainInstance(true);
 
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         homeViewModel.setEntityName(entityName);
         recyclerView = view.findViewById(R.id.recycler_view);
         notAvailableText = view.findViewById(R.id.not_available_text);
         detailObjectList = new ArrayList<>();
 
-        dialog = ProgressDialog.show(getActivity(), "",
-                "Loading. Please wait...", true);
+        dialog = Utils.progressDialog(getActivity());
         subscribeToLiveData();
         //logs view event for search fragment
         firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
@@ -114,17 +115,21 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
                 notAvailableText.setVisibility(View.VISIBLE);
             } else {
                 notAvailableText.setVisibility(View.GONE);
+                setDataToAdapter(detailObjectList);
             }
-            adapter = new EntityListAdapter(detailObjectList, context) ;
-            recyclerView.setHasFixedSize(true);
-             linearLayoutManager = new LinearLayoutManager(getActivity());
-            linearLayoutManager.setSmoothScrollbarEnabled(true);
-            linearLayoutManager.onRestoreInstanceState(recyclerViewState);
-            recyclerView.setLayoutManager(linearLayoutManager);
-
-            recyclerView.setAdapter(adapter);
             dialog.dismiss();
         });
+    }
+
+    private void setDataToAdapter(List<DetailObject> detailObjectList) {
+        adapter = new EntityListAdapter(detailObjectList, context) ;
+        recyclerView.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setSmoothScrollbarEnabled(true);
+        linearLayoutManager.onRestoreInstanceState(recyclerViewState);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

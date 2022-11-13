@@ -20,16 +20,43 @@ import java.util.List;
 
 public class HomeViewModel extends ViewModel {
     public static final String TAG = HomeViewModel.class.getSimpleName();
-    public MutableLiveData<List<DetailObject>> entityData;
-
-    // Write a message to the database
-    FirebaseDatabase database;
+    private MutableLiveData<List<DetailObject>> entityData;
+    private MutableLiveData<List<String>> itemsLiveData;
+    FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     public String entityName;
 
     public HomeViewModel() {
         entityData = new MutableLiveData<>();
+        itemsLiveData = new MutableLiveData<>();
+        // instance of our Firebase database.
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReferenceFromUrl(Conf.firebaseDomainUri());
 
+        // load data from firebase
+        loadDataFromFirebase();
+    }
+
+    private void loadDataFromFirebase() {
+        List<String> entityList = new ArrayList<>();
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("Count " ,""+dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    Log.d("Get Data", postSnapshot.getKey());
+                    entityList.add(postSnapshot.getKey());
+                }
+                itemsLiveData.setValue(entityList);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("Count " ,"databaseError " + databaseError.getMessage());
+            }
+        });
+        itemsLiveData.setValue(entityList);
     }
 
     public void setEntityName(String entityName) {
@@ -39,16 +66,15 @@ public class HomeViewModel extends ViewModel {
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
        // databaseReference.child()
 
-        databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(Conf.firebaseDomainUri());
-        loadDataFromFirebase();
+        loadEntityDataFromFirebase();
         Log.d(TAG, "entity name and databaseref, " + entityName + ", " + databaseReference.child(entityName));
     }
 
-    private void loadDataFromFirebase() {
-         databaseReference.child(entityName).addValueEventListener(new ValueEventListener() {
+    private void loadEntityDataFromFirebase() {
+        List<DetailObject> entityList = new ArrayList<>();
+        databaseReference.child(entityName).addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                 List<DetailObject> entityList = new ArrayList<>();
                  for (DataSnapshot data : dataSnapshot.getChildren()) {
                      Log.d(TAG, "snapshot data 1,"  + ", key," + data.getKey());
                      try {
@@ -73,12 +99,18 @@ public class HomeViewModel extends ViewModel {
 
              @Override
              public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                 Log.d("Count " ,"databaseError " + databaseError.getMessage());
+                 entityData.setValue(entityList);
              }
-         });
+        });
     }
 
     public LiveData<List<DetailObject>> getDataFromFirebase(){
           return entityData;
     }
+
+    public LiveData<List<String>> getItemsFromFromFirebase() {
+        return itemsLiveData;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.entertainment.fantom.fragment;
 
 import android.app.ActionBar;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -12,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.entertainment.fantom.R;
+import com.entertainment.fantom.utils.Utils;
+import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
@@ -41,8 +45,11 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private FirebaseAnalytics firebaseAnalytics;
+    private HomeViewModel homeViewModel;
+    private ProgressDialog dialog;
 
     private String selectedItem;
+    private List<String> itemsList;
 
     @BindView(R.id.spinner)
     Spinner spinner;
@@ -81,8 +88,10 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
         ButterKnife.bind(this,view);
-
+        dialog = Utils.progressDialog(getActivity());
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         //R.id.spinner_layout;
         firebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
         //logs view event
@@ -104,19 +113,28 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        fetchItemsFromFirebase();
         // Spinner Drop down elements
-        List<String> categories = new ArrayList<>();
-        categories.add("Looking for Bands for Events");
-        categories.add("Looking for Guitarist");
-        categories.add("Looking for male singer");
-        categories.add("Looking for female singer");
-        categories.add("Flute");
-        categories.add("Guitarist");
 
-        // Creating adapter for spinner
+        return view;
+    }
+
+    public void fetchItemsFromFirebase() {
+       // List<String> categories = new ArrayList<>();
+        homeViewModel.getItemsFromFromFirebase().observe(getViewLifecycleOwner(), items -> {
+              if (items != null && !items.isEmpty()) {
+                  spinner.setVisibility(View.VISIBLE);
+                  setDataToSpinner(items);
+                  dialog.dismiss();
+              } else {
+                  dialog.dismiss();
+              }
+        });
+    }
+
+    public void setDataToSpinner(List<String> categories) {
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_text, categories);
-
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown);
 
@@ -127,7 +145,6 @@ public class HomeFragment extends Fragment {
         mIcon.setColorFilter(ContextCompat.getColor(getActivity(), R.color.color_green_dark),
                 PorterDuff.Mode.MULTIPLY);
         spinnerDropDownImage.setImageDrawable(mIcon);
-        return view;
     }
 
     @Override
