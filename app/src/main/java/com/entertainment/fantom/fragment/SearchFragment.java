@@ -52,7 +52,6 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
     private SearchFragment context;
     private ProgressDialog dialog;
     private FirebaseAnalytics firebaseAnalytics;
-    private List<DetailObject> detailObjectList;
     private Parcelable recyclerViewState;
     private LinearLayoutManager linearLayoutManager;
     private TextView notAvailableText;
@@ -90,7 +89,6 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         homeViewModel.setEntityName(entityName);
         recyclerView = view.findViewById(R.id.recycler_view);
         notAvailableText = view.findViewById(R.id.not_available_text);
-        detailObjectList = new ArrayList<>();
 
         dialog = Utils.progressDialog(getActivity());
         subscribeToLiveData();
@@ -163,7 +161,6 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
              FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
              FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
              Fragment fragment = DetailFragment.newInstance(detailObject);
-             String tag = fragment.getClass().getName();
              fragmentTransaction.replace(R.id.home_fragment, fragment);
              fragmentTransaction.addToBackStack(TAG);
              fragmentTransaction.commit();
