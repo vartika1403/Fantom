@@ -76,10 +76,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-           // mParam1 = getArguments().getString(ARG_PARAM1);
-           // mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -120,7 +116,6 @@ public class HomeFragment extends Fragment {
     }
 
     public void fetchItemsFromFirebase() {
-       // List<String> categories = new ArrayList<>();
         homeViewModel.getItemsFromFromFirebase().observe(getViewLifecycleOwner(), items -> {
               if (items != null && !items.isEmpty()) {
                   spinner.setVisibility(View.VISIBLE);
@@ -166,14 +161,9 @@ public class HomeFragment extends Fragment {
         Fragment fragment = SearchFragment.newInstance(selectedItem, "");
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         String tag = fragment.getClass().getName();
-        fragmentTransaction.replace(R.id.home_fragment, fragment);
+        fragmentTransaction.replace(R.id.fragment, fragment);
         fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commit();
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
     }
 
     @Override
@@ -186,12 +176,4 @@ public class HomeFragment extends Fragment {
             actionBar.show();
         }
     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-
-
 }
