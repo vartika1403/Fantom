@@ -6,9 +6,8 @@ import butterknife.ButterKnife
 import android.view.Menu
 import android.util.Log
 import androidx.fragment.app.Fragment
-import com.entertainment.fantom.HomeActivity
-import com.entertainment.fantom.LoginFragment
 import com.entertainment.fantom.databinding.ActivityHomeBinding
+import com.entertainment.fantom.fragment.LoginFragment
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

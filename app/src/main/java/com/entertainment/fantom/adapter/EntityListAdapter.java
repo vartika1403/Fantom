@@ -33,19 +33,17 @@ public class EntityListAdapter extends RecyclerView.Adapter<EntityListAdapter.En
     public void onBindViewHolder(EntityViewHolder holder, int position) {
         if (holder != null) {
             if (detailObjectList.get(position) != null)
-             holder.entityName.setText(detailObjectList.get(position).getName());
+                holder.entityName.setText(detailObjectList.get(position).getName());
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SearchInterface searchInterface = (SearchInterface)context;
+                SearchInterface searchInterface = (SearchInterface) context;
                 searchInterface.setData(detailObjectList.get(position));
             }
         });
     }
-
-
 
     @Override
     public int getItemCount() {

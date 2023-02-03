@@ -161,7 +161,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
              FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
              FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
              Fragment fragment = DetailFragment.newInstance(detailObject);
-             fragmentTransaction.replace(R.id.home_fragment, fragment);
+             fragmentTransaction.replace(R.id.fragment, fragment);
              fragmentTransaction.addToBackStack(TAG);
              fragmentTransaction.commit();
          }

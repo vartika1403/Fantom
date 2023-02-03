@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.LoginFragment">
-
+    >
 
     <TextView
-        android:id="@+id/log_in_text"
+        android:id="@+id/logInText"
         android:text="@string/log_in"
         android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/baseColor"
@@ -20,6 +19,19 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <TextView
+        android:id="@+id/logInDescText"
+        android:text="@string/log_in_desc"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        app:layout_constraintTop_toBottomOf="@id/logInText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
     <Button
         android:id="@+id/logInButton"
         android:layout_width="match_parent"
@@ -27,10 +39,14 @@
         android:textAllCaps="true"
         android:textStyle="bold"
         android:textSize="22sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:text="@string/log_in"
         android:textColor="@color/ghost_white"
         android:background="@drawable/button_background"
+        app:layout_constraintVertical_bias="0.4"
         android:backgroundTint="@color/baseColor"
+        app:layout_constraintTop_toBottomOf="@id/logInText"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <EditText
@@ -38,6 +54,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/enter_phone_number"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintBottom_toTopOf="@id/logInButton"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
