@@ -48,7 +48,6 @@ public class HomeViewModel extends ViewModel {
                     entityList.add(postSnapshot.getKey());
                 }
                 itemsLiveData.setValue(entityList);
-
             }
 
             @Override
@@ -61,11 +60,6 @@ public class HomeViewModel extends ViewModel {
 
     public void setEntityName(String entityName) {
         this.entityName = entityName;
-      //  database = FirebaseDatabase.getInstance();
-
-//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-       // databaseReference.child()
-
         loadEntityDataFromFirebase();
         Log.d(TAG, "entity name and databaseref, " + entityName + ", " + databaseReference.child(entityName));
     }

@@ -41,37 +41,26 @@ class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var verificationId: String
     private lateinit var enterPhoneNo: EditText
+    private lateinit var logInButton : Button
     private var sharedPreferences: SharedPreferences? =
         context?.getSharedPreferences("app", Context.MODE_PRIVATE)
-
-    var editor = sharedPreferences?.edit()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_login, container, false)
         Log.d(TAG, "sharedPref, " + context)
-        //FirebaseApp.initializeApp(this)
         auth = FirebaseAuth.getInstance()
         isLogin = sharedPreferences?.getBoolean("isLogin", false)
-        val logInButton = view.findViewById<Button>(R.id.logInButton)
+        logInButton = view.findViewById<Button>(R.id.logInButton)
         enterPhoneNo = view.findViewById(R.id.enterPhoneNo)
         logInButton.text = "Get Otp"
-        //called when text is entered
-        // addEnterTextListener()
         logInButton.setOnClickListener {
-            // below line is for checking weather the user
-            // has entered his mobile number or not.
             if (TextUtils.isEmpty(enterPhoneNo.getText().toString())) {
-                // when mobile number text field is empty
-                // displaying a toast message.
                 Toast.makeText(context, "Please enter a valid phone number.", Toast.LENGTH_SHORT)
                     .show()
             } else {
-                // if the text field is not empty we are calling our
-                // send OTP method for getting OTP from Firebase.
                 val phone = "+91" + enterPhoneNo.getText().toString()
                 sendVerificationCode(phone)
             }
@@ -81,67 +70,35 @@ class LoginFragment : Fragment() {
     }
 
     private fun sendVerificationCode(number: String) {
-// this method is used for getting
-        // OTP on user phone number.
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-            number, // first parameter is user's mobile number
-            60, // second parameter is time limit for OTP
-            // verification which is 60 seconds in our case.
-            TimeUnit.SECONDS, // third parameter is for initializing units
-            // for time period which is in seconds in our case.
-            TaskExecutors.MAIN_THREAD, // this task will be excuted on Main thread.
-            mCallBack // we are calling callback method when we recieve OTP for
-            // auto verification of user.
+            number,
+            60,
+            TimeUnit.SECONDS,
+            TaskExecutors.MAIN_THREAD,
+            mCallBack
         );
-    }
-
-    private fun addEnterTextListener() {
-        enterPhoneNo.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-        })
     }
 
     // callback method is called on Phone auth provider.
     private val mCallBack: OnVerificationStateChangedCallbacks =
         object : OnVerificationStateChangedCallbacks() {
-            // below method is used when OTP is sent from Firebase
             override fun onCodeSent(s: String, forceResendingToken: ForceResendingToken) {
                 super.onCodeSent(s, forceResendingToken)
-                // when we receive the OTP it
-                // contains a unique id which
                 Log.d(TAG, "Login unique id: " + s)
                 verificationId = s
             }
 
             // this method is called when user receive OTP from Firebase.
             override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
-                // below line is used for getting OTP code which is sent in phone auth credentials.
                 val code = phoneAuthCredential.smsCode
                 Log.d(TAG, "Login otp code: " + code)
-                // checking if the code
-                // is null or not.
+
                 if (code != null) {
-                    // if the code is not null then
-                    // we are setting that code to
-                    // our OTP edittext field.
                     enterPhoneNo.setText(code)
+                    logInButton.text = "Verify Code"
                     Toast.makeText(context, "verification completed:  ${code}", Toast.LENGTH_SHORT)
                         .show();
 
-                    // after setting this code
-                    // to OTP edittext field we
-                    // are calling our verifycode method.
                     verifyCode(code)
                 }
             }
@@ -149,20 +106,15 @@ class LoginFragment : Fragment() {
             // this method is called when firebase doesn't
             // sends our OTP code due to any error or issue.
             override fun onVerificationFailed(e: FirebaseException) {
-                // displaying error message with firebase exception.
                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
             }
         }
 
     private fun verifyCode(code: String) {
-// below line is used for getting getting
-        // credentials from our verification id and code.
         val credential = PhoneAuthProvider.getCredential(verificationId, code)
-
         Log.d(TAG, "Login user credentials received: " + credential.smsCode)
-        // after getting credential we are
-        // calling sign in method.
-        //  signInWithCredential(credential)
+
+        signInWithCredential(credential)
     }
 
     private fun signInWithCredential(credential: PhoneAuthCredential) {
@@ -175,23 +127,14 @@ class LoginFragment : Fragment() {
                         .equalTo(num).addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(@NonNull dataSnapshot: DataSnapshot) {
                                 if (dataSnapshot.exists()) {
-                                    /* val intent = Intent(
-                                         this@VerifyPhoneActivity,
-                                         ProfileActivity::class.java
-                                     )
-                                     intent.flags =
-                                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                     startActivity(intent)*/
+                                    openHomeFragment()
                                 } else {
                                     FirebaseDatabase.getInstance().getReference("users").push()
                                         .child("phoneNumber").setValue(num).addOnSuccessListener {
-                                            /*  val intent = Intent(
-                                                  this@VerifyPhoneActivity,
-                                                  WelcomeActivity::class.java
-                                              )
-                                              startActivity(intent)*/
+                                           openHomeFragment()
                                         }
                                 }
+
                             }
 
                             override fun onCancelled(@NonNull databaseError: DatabaseError) {}
@@ -204,6 +147,16 @@ class LoginFragment : Fragment() {
                     ).show()
                 }
             }
+    }
+
+    private fun openHomeFragment() {
+        val fragmentManager = activity?.supportFragmentManager
+        fragmentManager?.let {
+            val fragmentTransaction = it.beginTransaction()
+            val fragment = HomeFragment.newInstance("isLoggedIn", "");
+            fragmentTransaction.replace(R.id.fragment, fragment)
+            fragmentTransaction.commit()
+        }
     }
 
 

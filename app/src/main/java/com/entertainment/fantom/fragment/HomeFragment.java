@@ -88,13 +88,10 @@ public class HomeFragment extends Fragment {
         ButterKnife.bind(this,view);
         dialog = Utils.progressDialog(getActivity());
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        //R.id.spinner_layout;
         firebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
-        //logs view event
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ORIGIN, "HomeFragment");
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
-
         firebaseAnalytics.setAnalyticsCollectionEnabled(true);
         firebaseAnalytics.setMinimumSessionDuration(1000);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -110,7 +107,6 @@ public class HomeFragment extends Fragment {
         });
 
         fetchItemsFromFirebase();
-        // Spinner Drop down elements
 
         return view;
     }
