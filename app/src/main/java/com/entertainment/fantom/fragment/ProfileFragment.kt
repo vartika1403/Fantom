@@ -18,14 +18,14 @@ import androidx.fragment.app.Fragment
 import com.entertainment.fantom.databinding.FragmentDetailBinding
 
 class ProfileFragment : Fragment() {
-    private lateinit var detailObject: DetailObject
+    private var detailObject: DetailObject? = null
     private var firebaseAnalytics: FirebaseAnalytics? = null
     private lateinit var binding: FragmentDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            detailObject = it.getParcelable(ARG_PARAM1)!!
+            detailObject = it.getParcelable(ARG_PARAM1)
         }
     }
 
@@ -58,34 +58,37 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setData() {
-        binding.nameTextValue.visibility = if (!detailObject.name.isNullOrEmpty()) VISIBLE else GONE
-        binding.nameTextValue.text = detailObject.name
-        binding.emailText.visibility = if (!detailObject.email.isNullOrEmpty()) VISIBLE else GONE
-        binding.emailText.text = detailObject.name
-        binding.fbLinkText.visibility = if (!detailObject.fbLink.isNullOrEmpty()) VISIBLE else GONE
-        binding.fbLinkText.text = detailObject.fbLink
-        binding.webLinkText.visibility =
-            if (!detailObject.webLink.isNullOrEmpty()) VISIBLE else GONE
-        binding.webLinkText.text = detailObject.webLink
+        detailObject?.let {
+            binding.nameTextValue.visibility = if (!it.name.isNullOrEmpty()) VISIBLE else GONE
+            binding.nameTextValue.text = it.name
+            binding.emailText.visibility = if (!it.email.isNullOrEmpty()) VISIBLE else GONE
+            binding.emailText.text = it.name
+            binding.fbLinkText.visibility = if (!it.fbLink.isNullOrEmpty()) VISIBLE else GONE
+            binding.fbLinkText.text = it.fbLink
+            binding.webLinkText.visibility =
+                if (!it.webLink.isNullOrEmpty()) VISIBLE else GONE
+            binding.webLinkText.text = it.webLink
+        }
     }
 
     private fun setImageToView() {
-        if (!detailObject.image.isNullOrEmpty()) {
-            binding.image.visibility = VISIBLE
+        detailObject?.let {
+            if (!it.image.isNullOrEmpty()) {
+                binding.image.visibility = VISIBLE
 
-            // Create a storage reference from our app
-            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(
-                detailObject.imageUrl
-            )
-            Log.d(TAG, "storageRef, " + storageRef.downloadUrl)
-            storageRef.downloadUrl.addOnCompleteListener { }
-            Glide.with(this)
-                .load(storageRef)
-                .centerCrop()
-                .placeholder(R.drawable.splash)
-                .into(binding.image)
-        } else {
-            binding.image.setVisibility(GONE);
+                // Create a storage reference from our app
+                val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(
+                    it.imageUrl
+                )
+
+                Log.d(TAG, "storageRef, " + storageRef.downloadUrl)
+                storageRef.downloadUrl.addOnCompleteListener { }
+                Glide.with(this)
+                    .load(storageRef)
+                    .centerCrop()
+                    .placeholder(R.drawable.splash)
+                    .into(binding.image)
+            }
         }
     }
 

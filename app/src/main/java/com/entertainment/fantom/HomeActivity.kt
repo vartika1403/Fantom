@@ -1,5 +1,7 @@
 package com.entertainment.fantom
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import butterknife.ButterKnife
@@ -7,9 +9,13 @@ import android.view.Menu
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.entertainment.fantom.databinding.ActivityHomeBinding
+import com.entertainment.fantom.fragment.HomeFragment
 import com.entertainment.fantom.fragment.LoginFragment
 
 class HomeActivity : AppCompatActivity() {
+    private val sharedPreferences: SharedPreferences? by lazy {
+        this.getSharedPreferences("app", Context.MODE_PRIVATE)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
        val binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -30,7 +36,9 @@ class HomeActivity : AppCompatActivity() {
 
     private fun loadHomeFragment() {
         val fragmentManager = supportFragmentManager
-        val fragment: Fragment = LoginFragment()
+        val isLogin = sharedPreferences?.getBoolean("isLogin", false) ?: false
+        Log.d(TAG, "Login home: " + isLogin)
+        val fragment: Fragment = if (isLogin) HomeFragment() else LoginFragment()
         val tag = fragment.javaClass.name
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment, fragment)

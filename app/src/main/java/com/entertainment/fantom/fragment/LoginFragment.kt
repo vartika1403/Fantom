@@ -1,5 +1,6 @@
 package com.entertainment.fantom.fragment
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import butterknife.ButterKnife
 import com.entertainment.fantom.R
+import com.entertainment.fantom.utils.Utils
 import com.google.android.gms.tasks.TaskExecutors
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
@@ -36,14 +38,16 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 class LoginFragment : Fragment() {
-    private var isLogin: Boolean? = false
+    private var isLogin: Boolean = false
     private val isVerified: Boolean = false
     private lateinit var auth: FirebaseAuth
     private lateinit var verificationId: String
     private lateinit var enterPhoneNo: EditText
     private lateinit var logInButton : Button
-    private var sharedPreferences: SharedPreferences? =
-        context?.getSharedPreferences("app", Context.MODE_PRIVATE)
+    private lateinit var progressDialog: ProgressDialog
+    private val sharedPreferences: SharedPreferences? by lazy {
+       context?.getSharedPreferences("app", Context.MODE_PRIVATE)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,17 +56,21 @@ class LoginFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
         Log.d(TAG, "sharedPref, " + context)
         auth = FirebaseAuth.getInstance()
-        isLogin = sharedPreferences?.getBoolean("isLogin", false)
+        isLogin = sharedPreferences?.getBoolean("isLogin", false) ?: false
         logInButton = view.findViewById<Button>(R.id.logInButton)
         enterPhoneNo = view.findViewById(R.id.enterPhoneNo)
         logInButton.text = "Get Otp"
+        Log.d(TAG, "Login 1: " + isLogin)
         logInButton.setOnClickListener {
             if (TextUtils.isEmpty(enterPhoneNo.getText().toString())) {
                 Toast.makeText(context, "Please enter a valid phone number.", Toast.LENGTH_SHORT)
                     .show()
             } else {
                 val phone = "+91" + enterPhoneNo.getText().toString()
-                sendVerificationCode(phone)
+                val text = if (isLogin) "Welcome to Fraternity" else "Sending verification code"
+                progressDialog = Utils.progressDialog(context, text)
+                if (!isLogin)
+                 sendVerificationCode(phone)
             }
         }
 
@@ -95,10 +103,10 @@ class LoginFragment : Fragment() {
 
                 if (code != null) {
                     enterPhoneNo.setText(code)
-                    logInButton.text = "Verify Code"
+                    logInButton.visibility = View.GONE
                     Toast.makeText(context, "verification completed:  ${code}", Toast.LENGTH_SHORT)
                         .show();
-
+                    progressDialog.dismiss()
                     verifyCode(code)
                 }
             }
@@ -150,6 +158,11 @@ class LoginFragment : Fragment() {
     }
 
     private fun openHomeFragment() {
+        isLogin = true
+        sharedPreferences?.edit()?.apply {
+            putBoolean("isLogin", isLogin)
+            apply()
+        }
         val fragmentManager = activity?.supportFragmentManager
         fragmentManager?.let {
             val fragmentTransaction = it.beginTransaction()

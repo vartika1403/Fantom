@@ -90,7 +90,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         recyclerView = view.findViewById(R.id.recycler_view);
         notAvailableText = view.findViewById(R.id.not_available_text);
 
-        dialog = Utils.progressDialog(getActivity());
+        dialog = Utils.progressDialog(getActivity(), "");
         subscribeToLiveData();
         //logs view event for search fragment
         firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());

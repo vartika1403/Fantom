@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
         ButterKnife.bind(this,view);
-        dialog = Utils.progressDialog(getActivity());
+        dialog = Utils.progressDialog(getActivity(), "");
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         firebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
         Bundle bundle = new Bundle();
