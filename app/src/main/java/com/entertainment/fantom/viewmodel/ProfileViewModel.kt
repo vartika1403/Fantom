@@ -1,7 +1,7 @@
 package com.entertainment.fantom.viewmodel
 
-import android.location.Address
 import androidx.lifecycle.ViewModel
+import com.entertainment.fantom.utils.isValidEmail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -15,10 +15,10 @@ class ProfileViewModel : ViewModel() {
     val detailsEntered: Flow<Boolean> = combine(_userName,
         _emailAddress, _webLink,_instagramLink) { userName, emailAddress, webLink, instagramLink ->
         val isUserNameEntered = userName.isNotEmpty()
-        val isEmailAddressEntered = emailAddress.isNotEmpty()
+        val isValidEmailAddressEntered = emailAddress.isValidEmail()
         val isWebLink = webLink.isNotEmpty()
         val isInstagramLink = instagramLink.isNotEmpty()
-        return@combine (isUserNameEntered or isEmailAddressEntered) and (isWebLink or isInstagramLink)
+        return@combine (isUserNameEntered and isValidEmailAddressEntered) and (isWebLink or isInstagramLink)
     }
 
     fun setUserName(userName: String) {

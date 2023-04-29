@@ -5,11 +5,13 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.entertainment.fantom.R
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,6 +24,7 @@ import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private var detailObject: DetailObject? = null
+    private var isUserProfile : Boolean = false
     private var firebaseAnalytics: FirebaseAnalytics? = null
     private lateinit var binding: FragmentDetailsNewBinding
     private val profileViewModel: ProfileViewModel by viewModels()
@@ -29,7 +32,8 @@ class ProfileFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            detailObject = it.getParcelable(ARG_PARAM1)
+            detailObject = it.getParcelable(DETAIL_OBJECT)
+            isUserProfile = it.getBoolean(IS_USER_PROFILE)
         }
     }
 
@@ -69,7 +73,11 @@ class ProfileFragment : Fragment() {
     private fun collectFlow() {
         lifecycleScope.launch(Dispatchers.Main) {
             profileViewModel.detailsEntered.collectLatest { value ->
+                binding.saveProfile.isVisible = isUserProfile
                 binding.saveProfile.isEnabled = value
+                if (value) {
+                     binding.saveProfile.setBackgroundColor(getResources().getColor(R.color.baseColor))
+                }
              }
         }
     }
@@ -104,25 +112,41 @@ class ProfileFragment : Fragment() {
         detailObject?.let {
             binding.userDetail.apply {
                 userName.apply {
+                    if (!isUserProfile && it.name.isNullOrEmpty()) {
+                        this.root.visibility = View.GONE
+                    }
                     name.text = getString(R.string.user_name)
+                    nameInputEditText.setEnabled(isUserProfile)
                     if(it.name.isNullOrEmpty()) nameInputText.hint = getString(R.string.enter_user_name)
                     else nameInputEditText.setText(it.name)
                 }
 
                 emailDetails.apply {
+                    if (!isUserProfile && it.email.isNullOrEmpty()) {
+                        this.root.visibility = View.GONE
+                    }
                     name.text = getString(R.string.user_email)
+                    nameInputEditText.setEnabled(isUserProfile)
                     if (it.email.isNullOrEmpty()) nameInputText.hint = getString(R.string.enter_email_address)
                     else nameInputEditText.setText(it.email)
                 }
 
                 webLink.apply {
+                    if (!isUserProfile && it.webLink.isNullOrEmpty()) {
+                        this.root.visibility = View.GONE
+                    }
                     name.text = getString(R.string.user_web_link)
+                    nameInputEditText.setEnabled(isUserProfile)
                     if (it.webLink.isNullOrEmpty()) nameInputText.hint = getString(R.string.enter_web_link)
                     else nameInputEditText.setText(it.webLink)
                 }
 
                 instagramDetails.apply {
+                    if (!isUserProfile && it.fbLink.isNullOrEmpty()) {
+                        this.root.visibility = View.GONE
+                    }
                     name.text = getString(R.string.user_instagram_link)
+                    nameInputEditText.setEnabled(isUserProfile)
                     if (it.fbLink.isNullOrEmpty()) nameInputText.hint = getString(R.string.enter_instagram)
                     else nameInputEditText.setText(it.fbLink)
                 }
@@ -138,13 +162,15 @@ class ProfileFragment : Fragment() {
 
     companion object {
         private val TAG = ProfileFragment::class.java.simpleName
-        private const val ARG_PARAM1 = "param1"
+        private const val DETAIL_OBJECT = "detail_obj"
+        private const val IS_USER_PROFILE = "isUserProfile"
 
         @JvmStatic
-        fun newInstance(detailObject: DetailObject): ProfileFragment {
+        fun newInstance(detailObject: DetailObject, isUserProfile : Boolean): ProfileFragment {
             val fragment = ProfileFragment()
             val args = Bundle()
-            args.putParcelable(ARG_PARAM1, detailObject)
+            args.putParcelable(DETAIL_OBJECT, detailObject)
+            args.putBoolean(IS_USER_PROFILE, isUserProfile)
             fragment.arguments = args
             return fragment
         }

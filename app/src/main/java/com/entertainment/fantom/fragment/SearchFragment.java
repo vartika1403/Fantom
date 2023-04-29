@@ -160,7 +160,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
              firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
              FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
              FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-             Fragment fragment = ProfileFragment.newInstance(detailObject);
+             Fragment fragment = ProfileFragment.newInstance(detailObject, false);
              fragmentTransaction.replace(R.id.fragment, fragment);
              fragmentTransaction.addToBackStack(TAG);
              fragmentTransaction.commit();
