@@ -3,24 +3,28 @@ package com.entertainment.fantom.fragment
 import com.entertainment.fantom.DetailObject
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.entertainment.fantom.R
+
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
-import android.view.View.VISIBLE
-import android.view.View.GONE
 import android.view.ViewGroup
-import com.google.firebase.storage.FirebaseStorage
-import com.bumptech.glide.Glide
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import com.entertainment.fantom.databinding.FragmentDetailBinding
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.entertainment.fantom.databinding.FragmentDetailsNewBinding
+import com.entertainment.fantom.viewmodel.ProfileViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private var detailObject: DetailObject? = null
     private var firebaseAnalytics: FirebaseAnalytics? = null
-    private lateinit var binding: FragmentDetailBinding
+    private lateinit var binding: FragmentDetailsNewBinding
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +38,7 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentDetailBinding.inflate(inflater)
+        binding = FragmentDetailsNewBinding.inflate(inflater)
         retainInstance = true
         //logs view event for search fragment
         firebaseAnalytics = activity?.let {
@@ -48,46 +52,80 @@ class ProfileFragment : Fragment() {
             it.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle)
             it.setAnalyticsCollectionEnabled(true)
         }
-        //set image
-        setImageToView()
 
-        // set data
-        setData()
         setHasOptionsMenu(true)
         return binding.root
     }
 
-    private fun setData() {
-        detailObject?.let {
-            binding.nameTextValue.visibility = if (!it.name.isNullOrEmpty()) VISIBLE else GONE
-            binding.nameTextValue.text = it.name
-            binding.emailText.visibility = if (!it.email.isNullOrEmpty()) VISIBLE else GONE
-            binding.emailText.text = it.name
-            binding.fbLinkText.visibility = if (!it.fbLink.isNullOrEmpty()) VISIBLE else GONE
-            binding.fbLinkText.text = it.fbLink
-            binding.webLinkText.visibility =
-                if (!it.webLink.isNullOrEmpty()) VISIBLE else GONE
-            binding.webLinkText.text = it.webLink
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initListeners()
+
+        displayUi()
+        collectFlow()
+    }
+
+    private fun collectFlow() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            profileViewModel.detailsEntered.collectLatest { value ->
+                binding.saveProfile.isEnabled = value
+             }
         }
     }
 
-    private fun setImageToView() {
+    private fun initListeners() {
+        binding.userDetail.userName.nameInputEditText.addTextChangedListener {
+            if (it.toString().isNotEmpty()) {
+              profileViewModel.setUserName(it.toString())
+            }
+        }
+
+        binding.userDetail.emailDetails.nameInputEditText.addTextChangedListener {
+            if (it.toString().isNotEmpty()) {
+                profileViewModel.setEmailAddress(it.toString())
+            }
+        }
+
+        binding.userDetail.webLink.nameInputEditText.addTextChangedListener {
+            if (it.toString().isNotEmpty()) {
+                profileViewModel.setWebLink(it.toString())
+            }
+        }
+
+        binding.userDetail.instagramDetails.nameInputEditText.addTextChangedListener {
+            if (it.toString().isNotEmpty()) {
+                profileViewModel.setInstagramLink(it.toString())
+            }
+        }
+    }
+
+    private fun displayUi() {
         detailObject?.let {
-            if (!it.image.isNullOrEmpty()) {
-                binding.image.visibility = VISIBLE
+            binding.userDetail.apply {
+                userName.apply {
+                    name.text = getString(R.string.user_name)
+                    if(it.name.isNullOrEmpty()) nameInputText.hint = getString(R.string.enter_user_name)
+                    else nameInputEditText.setText(it.name)
+                }
 
-                // Create a storage reference from our app
-                val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(
-                    it.imageUrl
-                )
+                emailDetails.apply {
+                    name.text = getString(R.string.user_email)
+                    if (it.email.isNullOrEmpty()) nameInputText.hint = getString(R.string.enter_email_address)
+                    else nameInputEditText.setText(it.email)
+                }
 
-                Log.d(TAG, "storageRef, " + storageRef.downloadUrl)
-                storageRef.downloadUrl.addOnCompleteListener { }
-                Glide.with(this)
-                    .load(storageRef)
-                    .centerCrop()
-                    .placeholder(R.drawable.splash)
-                    .into(binding.image)
+                webLink.apply {
+                    name.text = getString(R.string.user_web_link)
+                    if (it.webLink.isNullOrEmpty()) nameInputText.hint = getString(R.string.enter_web_link)
+                    else nameInputEditText.setText(it.webLink)
+                }
+
+                instagramDetails.apply {
+                    name.text = getString(R.string.user_instagram_link)
+                    if (it.fbLink.isNullOrEmpty()) nameInputText.hint = getString(R.string.enter_instagram)
+                    else nameInputEditText.setText(it.fbLink)
+                }
             }
         }
     }

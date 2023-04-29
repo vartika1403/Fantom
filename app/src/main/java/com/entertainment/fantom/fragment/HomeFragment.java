@@ -27,18 +27,13 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.entertainment.fantom.R;
+import com.entertainment.fantom.databinding.FragmentHomeBinding;
 import com.entertainment.fantom.utils.Utils;
 import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
@@ -50,15 +45,7 @@ public class HomeFragment extends Fragment {
 
     private String selectedItem;
     private List<String> itemsList;
-
-    @BindView(R.id.spinner)
-    Spinner spinner;
-
-    @BindView(R.id.button)
-    Button button;
-
-    @BindView(R.id.spinner_image)
-    ImageView spinnerDropDownImage;
+    private FragmentHomeBinding fragmentHomeBinding;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -82,10 +69,9 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        fragmentHomeBinding = FragmentHomeBinding.inflate(inflater);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-        ButterKnife.bind(this,view);
         dialog = Utils.progressDialog(getActivity(), "");
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         firebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
@@ -94,7 +80,7 @@ public class HomeFragment extends Fragment {
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
         firebaseAnalytics.setAnalyticsCollectionEnabled(true);
         firebaseAnalytics.setMinimumSessionDuration(1000);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        fragmentHomeBinding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedItem = (String) adapterView.getItemAtPosition(i);
@@ -108,18 +94,27 @@ public class HomeFragment extends Fragment {
 
         fetchItemsFromFirebase();
 
-        return view;
+        fragmentHomeBinding.joinButton.setOnClickListener(v -> {
+            clickButton();
+        });
+
+        return fragmentHomeBinding.getRoot();
     }
 
     public void fetchItemsFromFirebase() {
+       dialog.show();
         homeViewModel.getItemsFromFromFirebase().observe(getViewLifecycleOwner(), items -> {
-              if (items != null && !items.isEmpty()) {
-                  spinner.setVisibility(View.VISIBLE);
-                  setDataToSpinner(items);
-                  dialog.dismiss();
-              } else {
-                  dialog.dismiss();
-              }
+            if (items != null ) {
+                dialog.dismiss();
+                if (!items.isEmpty()) {
+                    fragmentHomeBinding.spinner.setVisibility(View.VISIBLE);
+                    fragmentHomeBinding.joinButton.setVisibility(View.VISIBLE);
+                    setDataToSpinner(items);
+                } else  {
+                    fragmentHomeBinding.spinner.setVisibility(View.GONE);
+                    fragmentHomeBinding.joinButton.setVisibility(View.GONE);
+                }
+            }
         });
     }
 
@@ -130,12 +125,12 @@ public class HomeFragment extends Fragment {
         dataAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown);
 
         // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
+        fragmentHomeBinding.spinner.setAdapter(dataAdapter);
         Drawable mIcon= ContextCompat.getDrawable(getActivity(), R.mipmap.drop_down);
         assert mIcon != null;
         mIcon.setColorFilter(ContextCompat.getColor(getActivity(), R.color.color_green_dark),
                 PorterDuff.Mode.MULTIPLY);
-        spinnerDropDownImage.setImageDrawable(mIcon);
+        fragmentHomeBinding.spinnerImage.setImageDrawable(mIcon);
     }
 
     @Override
@@ -147,7 +142,6 @@ public class HomeFragment extends Fragment {
     }
 
     //move to searchFragment
-    @OnClick(R.id.button)
     public void clickButton() {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ORIGIN, "HomeFragment");

@@ -18,4 +18,12 @@
     <string name="log_in">Log In </string>
     <string name="log_in_desc"> Are you set to enter the world of live entertainment</string>
     <string name="signin_failure_message">Failed to sign in</string>
+    <string name="user_name">User/Band name</string>
+    <string name="user_email">Email Address</string>
+    <string name="user_web_link">Web Link</string>
+    <string name="user_instagram_link">Instagram Link</string>
+    <string name="enter_user_name">Enter User/Band Name</string>
+    <string name="enter_email_address">Enter Email Address</string>
+    <string name="enter_web_link">Enter Web Link</string>
+    <string name="enter_instagram">Enter Instagram Link</string>
 </resources>

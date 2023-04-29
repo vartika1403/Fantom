@@ -52,10 +52,10 @@ public class HomeViewModel extends ViewModel {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                itemsLiveData.setValue(entityList);
                 Log.d("Count " ,"databaseError " + databaseError.getMessage());
             }
         });
-        itemsLiveData.setValue(entityList);
     }
 
     public void setEntityName(String entityName) {
