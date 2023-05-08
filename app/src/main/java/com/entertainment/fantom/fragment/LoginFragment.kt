@@ -16,11 +16,10 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
-import butterknife.ButterKnife
+import com.entertainment.fantom.DetailObject
 import com.entertainment.fantom.R
 import com.entertainment.fantom.utils.Utils
 import com.google.android.gms.tasks.TaskExecutors
-import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -130,16 +129,20 @@ class LoginFragment : Fragment() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val num = task.result?.user?.phoneNumber
-                    Log.d(TAG, "Login user no: " + num)
+                    val userId = task.result?.user?.uid
+                    Log.d(TAG, "Login user no: " + num + " user Id : " + userId)
                     FirebaseDatabase.getInstance().getReference("users").orderByChild("phoneNumber")
                         .equalTo(num).addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(@NonNull dataSnapshot: DataSnapshot) {
                                 if (dataSnapshot.exists()) {
-                                    openHomeFragment()
+                                    openHomeFragment(userId, num)
                                 } else {
+                                    val detailObject = DetailObject()
+                                    detailObject.userId = userId
+                                    detailObject.phoneNum = num
                                     FirebaseDatabase.getInstance().getReference("users").push()
                                         .child("phoneNumber").setValue(num).addOnSuccessListener {
-                                           openHomeFragment()
+                                           openHomeFragment(userId, num)
                                         }
                                 }
 
@@ -157,10 +160,12 @@ class LoginFragment : Fragment() {
             }
     }
 
-    private fun openHomeFragment() {
+    private fun openHomeFragment(userId: String?, phoneNum : String?) {
         isLogin = true
         sharedPreferences?.edit()?.apply {
             putBoolean("isLogin", isLogin)
+            putString("phoneNumber", phoneNum)
+            putString("userId", userId)
             apply()
         }
         val fragmentManager = activity?.supportFragmentManager

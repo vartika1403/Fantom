@@ -4,29 +4,27 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class DetailObject implements Parcelable {
-    private String fbLink;
+    private String userId;
     private String name;
-    private String webLink;
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    private String image;
     private String email;
+    private String phoneNumber;
+    private String webLink;
+    private String fbLink;
+    private String image;
+    private String category;
 
     public DetailObject() {
 
     }
-    public DetailObject(String name,String fbLink,  String webLink, String image) {
+    public DetailObject(String userId, String name,String fbLink,  String webLink,
+                        String image, String phoneNumber, String category) {
+        this.userId = userId;
         this.fbLink = fbLink;
         this.name = name;
         this.webLink = webLink;
         this.image = image;
+        this.phoneNumber = phoneNumber;
+        this.category = category;
     }
 
     protected DetailObject(Parcel in) {
@@ -35,6 +33,8 @@ public class DetailObject implements Parcelable {
         webLink = in.readString();
         image = in.readString();
         email = in.readString();
+        phoneNumber = in.readString();
+        category = in.readString();
     }
 
     public static final Creator<DetailObject> CREATOR = new Creator<DetailObject>() {
@@ -48,6 +48,22 @@ public class DetailObject implements Parcelable {
             return new DetailObject[size];
         }
     };
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getFbLink() {
         return fbLink;
@@ -89,6 +105,20 @@ public class DetailObject implements Parcelable {
         this.email = email;
     }
 
+    public void setPhoneNum(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNum() {
+        return phoneNumber;
+    }
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
     @Override
     public int describeContents() {
         return 0;

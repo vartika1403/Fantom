@@ -31,4 +31,12 @@
         android:layout_height="wrap_content"
         layout="@layout/details_card_view"
         />
+
+    <include
+        android:id="@+id/categories"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/details_card_view"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

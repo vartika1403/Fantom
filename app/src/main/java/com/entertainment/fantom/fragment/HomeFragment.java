@@ -3,6 +3,7 @@ package com.entertainment.fantom.fragment;
 import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,14 +11,19 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,6 +32,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.entertainment.fantom.DetailObject;
 import com.entertainment.fantom.R;
 import com.entertainment.fantom.databinding.FragmentHomeBinding;
 import com.entertainment.fantom.utils.Utils;
@@ -35,7 +42,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.List;
 import java.util.Objects;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements MenuProvider {
     private static final String TAG = "HomeFragment";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -46,6 +53,7 @@ public class HomeFragment extends Fragment {
     private String selectedItem;
     private List<String> itemsList;
     private FragmentHomeBinding fragmentHomeBinding;
+    private SharedPreferences sharedPreferences;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -70,8 +78,10 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragmentHomeBinding = FragmentHomeBinding.inflate(inflater);
-        setHasOptionsMenu(true);
+        sharedPreferences = getContext().getSharedPreferences("app", Context.MODE_PRIVATE);
         setRetainInstance(true);
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         dialog = Utils.progressDialog(getActivity(), "");
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         firebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
@@ -99,6 +109,24 @@ public class HomeFragment extends Fragment {
         });
 
         return fragmentHomeBinding.getRoot();
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.menu, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+       if (menuItem.getItemId() == R.id.add_profile) {
+           FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+           FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+           Fragment fragment = ProfileFragment.newInstance(new DetailObject(), true);
+           fragmentTransaction.replace(R.id.fragment, fragment);
+           fragmentTransaction.addToBackStack(TAG);
+           fragmentTransaction.commit();
+       }
+        return false;
     }
 
     public void fetchItemsFromFirebase() {
@@ -165,5 +193,11 @@ public class HomeFragment extends Fragment {
         if (actionBar != null) {
             actionBar.show();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
     }
 }

@@ -1,10 +1,7 @@
 package com.entertainment.fantom.utils
 
-import com.entertainment.fantom.DetailObject
-
-
-sealed class Resource {
-    data class Loading(val data: Any? = null) : Resource()
-    data class Success(val data : DetailObject) : Resource()
-    data class Error(val error: String = "") : Resource()
+sealed class Resource<out T : Any> {
+   object Loading : Resource<Nothing>()
+    data class Success<out T:Any>(val data : T) : Resource<T>()
+    data class Error(val error: String = "", val emailError: Boolean = false) : Resource<Nothing>()
 }
