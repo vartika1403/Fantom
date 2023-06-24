@@ -88,7 +88,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private fun collectFlow() {
         binding.saveProfile.isVisible = isUserProfile
-        var value: Boolean = false
+        var value = false
         lifecycleScope.launch(Dispatchers.Main) {
             profileViewModel.detailsEntered.collectLatest {
                 value = it
@@ -108,8 +108,9 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
             when (resource) {
                 is Resource.Error -> {
                     if (resource.error.isNotEmpty() && resource.emailError) {
-                        val dialog = Utils.progressDialog(activity, resource.error)
-                        dialog.show()
+                        Toast.makeText(context, "Please enter correct email address ", Toast.LENGTH_LONG).show()
+                    } else if (resource.error.isNotEmpty()) {
+                        Toast.makeText(context, "Please try again later", Toast.LENGTH_LONG).show()
                     }
                 }
                 is Resource.Success -> {
@@ -129,7 +130,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
 
         binding.userDetail.emailDetails.nameInputEditText.addTextChangedListener {
-            if (it.toString().isNotEmpty()) {
+            if (it.toString().trim().isNotEmpty()) {
                 profileViewModel.setEmailAddress(it.toString())
 
             }
@@ -209,6 +210,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     categories.nameInputEditText.visibility = View.GONE
                     categories.spinner.visibility = View.VISIBLE
                     categories.spinner.adapter = array_adapter
+                    selectedItem = categories.spinner.selectedItem as String
+                    profileViewModel.setCategory(selectedItem)
                 }
             }
         }

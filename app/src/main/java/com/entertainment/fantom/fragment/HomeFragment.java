@@ -154,11 +154,12 @@ public class HomeFragment extends Fragment implements MenuProvider {
 
         // attaching data adapter to spinner
         fragmentHomeBinding.spinner.setAdapter(dataAdapter);
-        Drawable mIcon= ContextCompat.getDrawable(getActivity(), R.mipmap.drop_down);
-        assert mIcon != null;
-        mIcon.setColorFilter(ContextCompat.getColor(getActivity(), R.color.color_green_dark),
-                PorterDuff.Mode.MULTIPLY);
-        fragmentHomeBinding.spinnerImage.setImageDrawable(mIcon);
+        if (getActivity() != null) {
+            Drawable mIcon = ContextCompat.getDrawable(getActivity(), R.mipmap.drop_down);
+            mIcon.setColorFilter(ContextCompat.getColor(getActivity(), R.color.color_green_dark),
+                    PorterDuff.Mode.MULTIPLY);
+            fragmentHomeBinding.spinnerImage.setImageDrawable(mIcon);
+        }
     }
 
     @Override
@@ -175,7 +176,7 @@ public class HomeFragment extends Fragment implements MenuProvider {
         bundle.putString(FirebaseAnalytics.Param.ORIGIN, "HomeFragment");
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, selectedItem);
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         Fragment fragment = SearchFragment.newInstance(selectedItem, "");
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         String tag = fragment.getClass().getName();

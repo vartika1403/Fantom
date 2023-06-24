@@ -58,7 +58,7 @@ class ProfileViewModel(private val context: Context?, private val profileReposit
     }
 
     fun saveData() {
-        viewModelScope.launch{
+        viewModelScope.launch {
           if (!_emailAddress.value.isValidEmail()) {
               _detailObjectLiveData.postValue(Resource.Error("Please enter correct email address", emailError = true))
           } else {
@@ -74,13 +74,22 @@ class ProfileViewModel(private val context: Context?, private val profileReposit
                   detailsObject.webLink = _webLink.value
               }
               _detailObjectLiveData.postValue(Resource.Loading)
-              profileRepository.saveDate(detailsObject).collect { resource ->
+              profileRepository.saveProfileData(detailsObject).collect { resource ->
                  if (resource is Resource.Success<String>) {
                      _detailObjectLiveData.postValue(Resource.Success(resource.data))
                  } else if (resource is Resource.Error) {
                      _detailObjectLiveData.postValue(Resource.Error(resource.error))
                  }
                }
+
+             profileRepository.saveCategoryDataUtil(detailsObject).collect {
+                      resource ->
+                  if (resource is Resource.Success<String>) {
+                      _detailObjectLiveData.postValue(Resource.Success(resource.data))
+                  } else if (resource is Resource.Error) {
+                      _detailObjectLiveData.postValue(Resource.Error(resource.error))
+                  }
+              }
           }
         }
     }
