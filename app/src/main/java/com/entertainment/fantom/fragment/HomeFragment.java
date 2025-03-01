@@ -1,25 +1,7 @@
 package com.entertainment.fantom.fragment;
 
-import android.app.ActionBar;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,9 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.entertainment.fantom.DetailObject;
 import com.entertainment.fantom.R;
@@ -40,10 +28,9 @@ import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
-import java.util.Objects;
 
 public class HomeFragment extends Fragment implements MenuProvider {
-    private static final String TAG = "HomeFragment";
+    public static final String TAG = "HomeFragment";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private FirebaseAnalytics firebaseAnalytics;
@@ -53,7 +40,6 @@ public class HomeFragment extends Fragment implements MenuProvider {
     private String selectedItem;
     private List<String> itemsList;
     private FragmentHomeBinding fragmentHomeBinding;
-    private SharedPreferences sharedPreferences;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -78,13 +64,9 @@ public class HomeFragment extends Fragment implements MenuProvider {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragmentHomeBinding = FragmentHomeBinding.inflate(inflater);
-        sharedPreferences = getContext().getSharedPreferences("app", Context.MODE_PRIVATE);
-        setRetainInstance(true);
-        MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         dialog = Utils.progressDialog(getActivity(), "");
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        firebaseAnalytics = FirebaseAnalytics.getInstance(Objects.requireNonNull(getActivity()));
+        firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ORIGIN, "HomeFragment");
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
@@ -102,46 +84,58 @@ public class HomeFragment extends Fragment implements MenuProvider {
             }
         });
 
+        homeViewModel.loadDataFromFirebase();
+        dialog.dismiss();
         fetchItemsFromFirebase();
 
         fragmentHomeBinding.joinButton.setOnClickListener(v -> {
             clickButton();
         });
 
+
         return fragmentHomeBinding.getRoot();
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().getActionBar().show();
+    }
+
+
+    @Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu, menu);
+        menuInflater.inflate(R.menu.main, menu);
     }
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-       if (menuItem.getItemId() == R.id.add_profile) {
-           FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-           FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-           Fragment fragment = ProfileFragment.newInstance(new DetailObject(), true);
-           fragmentTransaction.replace(R.id.fragment, fragment);
-           fragmentTransaction.addToBackStack(TAG);
-           fragmentTransaction.commit();
-       }
-        return false;
+        if (menuItem.getItemId() == R.id.add_profile) {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            Fragment fragment = ProfileFragment.newInstance(new DetailObject(), true);
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.addToBackStack(TAG);
+            fragmentTransaction.commit();
+        }
+        return true;
     }
 
     public void fetchItemsFromFirebase() {
-       dialog.show();
+        // dialog.show();
         homeViewModel.getItemsFromFromFirebase().observe(getViewLifecycleOwner(), items -> {
-            if (items != null ) {
-                dialog.dismiss();
+            // dialog.dismiss();
+            if (items != null) {
                 if (!items.isEmpty()) {
                     fragmentHomeBinding.spinner.setVisibility(View.VISIBLE);
                     fragmentHomeBinding.joinButton.setVisibility(View.VISIBLE);
                     setDataToSpinner(items);
-                } else  {
+                } else {
                     fragmentHomeBinding.spinner.setVisibility(View.GONE);
                     fragmentHomeBinding.joinButton.setVisibility(View.GONE);
                 }
+            } else {
+                Toast.makeText(requireContext(), "Network issue , please try again", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -154,12 +148,12 @@ public class HomeFragment extends Fragment implements MenuProvider {
 
         // attaching data adapter to spinner
         fragmentHomeBinding.spinner.setAdapter(dataAdapter);
-        if (getActivity() != null) {
+       /* if (getActivity() != null) {
             Drawable mIcon = ContextCompat.getDrawable(getActivity(), R.mipmap.drop_down);
             mIcon.setColorFilter(ContextCompat.getColor(getActivity(), R.color.color_green_dark),
                     PorterDuff.Mode.MULTIPLY);
-            fragmentHomeBinding.spinnerImage.setImageDrawable(mIcon);
-        }
+            fragmentHomeBinding. .setImageDrawable(mIcon);
+        }*/
     }
 
     @Override
@@ -180,12 +174,12 @@ public class HomeFragment extends Fragment implements MenuProvider {
         Fragment fragment = SearchFragment.newInstance(selectedItem, "");
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         String tag = fragment.getClass().getName();
-        fragmentTransaction.replace(R.id.fragment, fragment);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commit();
     }
 
-    @Override
+  /*  @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         Log.d(TAG, "onPrepartionMenu of Home: " );
@@ -194,11 +188,11 @@ public class HomeFragment extends Fragment implements MenuProvider {
         if (actionBar != null) {
             actionBar.show();
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu, menu);
         super.onCreateOptionsMenu(menu,inflater);
-    }
+    }*/
 }

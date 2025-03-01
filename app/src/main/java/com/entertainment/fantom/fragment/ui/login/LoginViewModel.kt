@@ -1,11 +1,11 @@
 package com.entertainment.fantom.fragment.ui.login
 
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
-import com.entertainment.fantom.fragment.data.LoginRepository
-import com.entertainment.fantom.fragment.data.Result
+import com.entertainment.fantom.data.data.LoginRepository
+import com.entertainment.fantom.data.data.Result
 
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
@@ -24,15 +24,15 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
             _loginResult.value =
                 LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
         } else {
-           // _loginResult.value = LoginResult(error = R.string.login_failed)
+            // _loginResult.value = LoginResult(error = R.string.login_failed)
         }
     }
 
     fun loginDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {
-           // _loginForm.value = LoginFormState(usernameError = R.string.invalid_username)
+            // _loginForm.value = LoginFormState(usernameError = R.string.invalid_username)
         } else if (!isPasswordValid(password)) {
-         //   _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
+            //   _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
         } else {
             _loginForm.value = LoginFormState(isDataValid = true)
         }

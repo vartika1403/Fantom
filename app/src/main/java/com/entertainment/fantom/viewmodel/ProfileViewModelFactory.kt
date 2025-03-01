@@ -3,18 +3,14 @@ package com.entertainment.fantom.viewmodel
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.entertainment.fantom.repository.ProfileRepository
+import com.entertainment.fantom.data.repository.ProfileRepository
 
-class ProfileViewModelFactory : ViewModelProvider.Factory {
-    private var application: Activity?
+class ProfileViewModelFactory(
+    private var application: Activity?,
     private var profileRepository: ProfileRepository
+) : ViewModelProvider.Factory {
 
-    constructor(application: Activity?, profileRepository: ProfileRepository){
-        this.application = application
-        this.profileRepository = profileRepository
-    }
-
-    override  fun <T : ViewModel> create(modelClass :Class<T>): T {
-        return ProfileViewModel(application,profileRepository) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return ProfileViewModel(application, profileRepository) as T
     }
 }

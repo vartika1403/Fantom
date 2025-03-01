@@ -2,11 +2,11 @@ package com.entertainment.fantom.fragment
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,12 +14,14 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.entertainment.fantom.DetailObject
 import com.entertainment.fantom.R
+import com.entertainment.fantom.data.Resource
+import com.entertainment.fantom.data.repository.ProfileRepository
 import com.entertainment.fantom.databinding.FragmentDetailsNewBinding
-import com.entertainment.fantom.repository.ProfileRepository
-import com.entertainment.fantom.utils.Resource
 import com.entertainment.fantom.utils.Utils
 import com.entertainment.fantom.viewmodel.ProfileViewModel
 import com.entertainment.fantom.viewmodel.ProfileViewModelFactory
@@ -28,7 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
+class ProfileFragment : Fragment() {
     private var detailObject: DetailObject? = null
     private var isUserProfile: Boolean = false
     private var selectedItem = ""
@@ -37,7 +39,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val profileRepository by lazy {
         ProfileRepository()
     }
-    private var categories_list_items = arrayOf("Female Singer", "Male Singer", "Guitarist", "Band")
+    private var categories_list_items = listOf("Female Singer", "Male Singer", "Guitarist", "Band")
     private val profileViewModel: ProfileViewModel by viewModels {
         ProfileViewModelFactory(
             context as Activity?,
@@ -47,10 +49,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            detailObject = it.getParcelable(DETAIL_OBJECT)
-            isUserProfile = it.getBoolean(IS_USER_PROFILE)
-        }
+        // Hide the Action Bar
     }
 
     override fun onCreateView(
@@ -73,12 +72,20 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
             it.setAnalyticsCollectionEnabled(true)
         }
 
-        setHasOptionsMenu(true)
+        //setHasOptionsMenu(true)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        arguments?.let {
+            detailObject = it.getParcelable(DETAIL_OBJECT)
+            isUserProfile = it.getBoolean(IS_USER_PROFILE)
+        }
+
+
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
 
         initListeners()
 
@@ -90,8 +97,10 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.saveProfile.isVisible = isUserProfile
         var value = false
         lifecycleScope.launch(Dispatchers.Main) {
-            profileViewModel.detailsEntered.collectLatest {
-                value = it
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                profileViewModel.detailsEnteredAreCorrect.collectLatest {
+                    value = it
+                }
             }
         }
 
@@ -100,7 +109,8 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 if (value) {
                     profileViewModel.saveData()
                 } else {
-                    Toast.makeText(context, "Please enter all details: ", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Please enter correct details: ", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -108,41 +118,59 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
             when (resource) {
                 is Resource.Error -> {
                     if (resource.error.isNotEmpty() && resource.emailError) {
-                        Toast.makeText(context, "Please enter correct email address ", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            getString(R.string.please_enter_correct_email_address),
+                            Toast.LENGTH_LONG
+                        ).show()
                     } else if (resource.error.isNotEmpty()) {
-                        Toast.makeText(context, "Please try again later", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            getString(R.string.please_try_again_later), Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
+
                 is Resource.Success -> {
+                    Log.d("vartika", "result is successfully saved")
                     val dialog = Utils.progressDialog(activity, resource.data)
                     dialog.show()
+                    dialog.setCanceledOnTouchOutside(true)
+                    requireActivity().getSupportFragmentManager().popBackStack()
                 }
-                else -> Resource.Loading
+
+                is Resource.Loading -> {
+                    val dialog = Utils.progressDialog(activity, getString(R.string.saving_data))
+                    dialog.show()
+                    dialog.setCanceledOnTouchOutside(true)
+
+                }
             }
         })
     }
 
     private fun initListeners() {
-        binding.userDetail.userName.nameInputEditText.addTextChangedListener {
-            if (it.toString().isNotEmpty()) {
+        binding.userDetail.userName.userDetailEditText.addTextChangedListener {
+            if (it != null && it.toString().isNotEmpty()) {
                 profileViewModel.setUserName(it.toString())
+
             }
         }
 
-        binding.userDetail.emailDetails.nameInputEditText.addTextChangedListener {
-            if (it.toString().trim().isNotEmpty()) {
+        binding.userDetail.emailDetails.userDetailEditText.addTextChangedListener {
+            if (it != null && it.toString().trim().isNotEmpty()) {
                 profileViewModel.setEmailAddress(it.toString())
 
             }
         }
 
-        binding.userDetail.webLink.nameInputEditText.addTextChangedListener {
+        binding.userDetail.webLink.userDetailEditText.addTextChangedListener {
             if (it.toString().isNotEmpty()) {
                 profileViewModel.setWebLink(it.toString())
             }
         }
 
-        binding.userDetail.instagramDetails.nameInputEditText.addTextChangedListener {
+        binding.userDetail.instagramDetails.userDetailEditText.addTextChangedListener {
             if (it.toString().isNotEmpty()) {
                 profileViewModel.setInstagramLink(it.toString())
             }
@@ -156,44 +184,42 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     if (!isUserProfile && it.name.isNullOrEmpty()) {
                         this.root.visibility = View.GONE
                     }
-                    name.text = getString(R.string.user_name)
-                    nameInputEditText.setEnabled(isUserProfile)
+                    //name.text = getString(R.string.user_name)
+                    userDetailEditText.setEnabled(isUserProfile)
                     if (it.name.isNullOrEmpty()) nameInputText.hint =
                         getString(R.string.enter_user_name)
-                    else nameInputEditText.setText(it.name)
+                    else userDetailEditText.setText(it.name)
                 }
 
                 emailDetails.apply {
                     if (!isUserProfile && it.email.isNullOrEmpty()) {
                         this.root.visibility = View.GONE
                     }
-                    name.text = getString(R.string.user_email)
-                    nameInputEditText.setEnabled(isUserProfile)
+                    userDetailEditText.setEnabled(isUserProfile)
                     if (it.email.isNullOrEmpty()) nameInputText.hint =
                         getString(R.string.enter_email_address)
-                    else nameInputEditText.setText(it.email)
+                    else userDetailEditText.setText(it.email)
                 }
 
                 webLink.apply {
                     if (!isUserProfile && it.webLink.isNullOrEmpty()) {
                         this.root.visibility = View.GONE
                     }
-                    name.text = getString(R.string.user_web_link)
-                    nameInputEditText.setEnabled(isUserProfile)
+
+                    userDetailEditText.setEnabled(isUserProfile)
                     if (it.webLink.isNullOrEmpty()) nameInputText.hint =
                         getString(R.string.enter_web_link)
-                    else nameInputEditText.setText(it.webLink)
+                    else userDetailEditText.setText(it.webLink)
                 }
 
                 instagramDetails.apply {
                     if (!isUserProfile && it.fbLink.isNullOrEmpty()) {
                         this.root.visibility = View.GONE
                     }
-                    name.text = getString(R.string.user_instagram_link)
-                    nameInputEditText.setEnabled(isUserProfile)
+                    userDetailEditText.setEnabled(isUserProfile)
                     if (it.fbLink.isNullOrEmpty()) nameInputText.hint =
                         getString(R.string.enter_instagram)
-                    else nameInputEditText.setText(it.fbLink)
+                    else userDetailEditText.setText(it.fbLink)
                 }
 
                 if (isUserProfile) {
@@ -206,8 +232,7 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     }
                     array_adapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     categories.root.visibility = View.VISIBLE
-                    categories.name.text = getString(R.string.user_categories)
-                    categories.nameInputEditText.visibility = View.GONE
+                    categories.userDetailEditText.visibility = View.GONE
                     categories.spinner.visibility = View.VISIBLE
                     categories.spinner.adapter = array_adapter
                     selectedItem = categories.spinner.selectedItem as String
@@ -219,9 +244,10 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        if (activity != null && (activity as AppCompatActivity?)!!.supportActionBar != null) (activity as AppCompatActivity?)!!.supportActionBar!!
-            .hide()
+        /* if (activity != null && (activity as AppCompatActivity?)?.supportActionBar != null) (activity as AppCompatActivity?)?.supportActionBar!!
+             .hide()*/
     }
+
 
     companion object {
         private val TAG = ProfileFragment::class.java.simpleName
@@ -239,12 +265,4 @@ class ProfileFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        selectedItem = parent?.getItemAtPosition(position) as String
-        profileViewModel.setCategory(selectedItem)
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
-    }
 }

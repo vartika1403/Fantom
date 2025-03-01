@@ -1,4 +1,4 @@
-package com.entertainment.fantom.fragment.data
+package com.entertainment.fantom.data.data
 
 /**
  * A generic class that holds a value with its loading status.

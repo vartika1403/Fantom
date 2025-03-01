@@ -4,18 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,15 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.entertainment.fantom.DetailObject;
-import com.entertainment.fantom.adapter.EntityListAdapter;
 import com.entertainment.fantom.R;
 import com.entertainment.fantom.SearchInterface;
+import com.entertainment.fantom.adapter.EntityListAdapter;
 import com.entertainment.fantom.utils.Utils;
 import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -109,7 +106,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void subscribeToLiveData() {
         homeViewModel.getDataFromFirebase().observe(getViewLifecycleOwner(), detailObjectList -> {
-            if (detailObjectList ==null || detailObjectList.size() == 0) {
+            if (detailObjectList == null || detailObjectList.size() == 0) {
                 notAvailableText.setVisibility(View.VISIBLE);
             } else {
                 notAvailableText.setVisibility(View.GONE);
@@ -120,7 +117,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
     }
 
     private void setDataToAdapter(List<DetailObject> detailObjectList) {
-        adapter = new EntityListAdapter(detailObjectList, context) ;
+        adapter = new EntityListAdapter(detailObjectList, context);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setSmoothScrollbarEnabled(true);
@@ -153,25 +150,25 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
 
     @Override
     public void setData(DetailObject detailObject) {
-         if (detailObject != null) {
-             Bundle bundle = new Bundle();
-             bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
-             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, detailObject.getName());
-             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-             Fragment fragment = ProfileFragment.newInstance(detailObject, false);
-             fragmentTransaction.replace(R.id.fragment, fragment);
-             fragmentTransaction.addToBackStack(TAG);
-             fragmentTransaction.commit();
-         }
+        if (detailObject != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, detailObject.getName());
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            Fragment fragment = ProfileFragment.newInstance(detailObject, false);
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.addToBackStack(TAG);
+            fragmentTransaction.commit();
+        }
     }
 
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        Log.d(TAG, "onPrepartionMenu of Search: " );
-        if (getActivity() != null &&  ((AppCompatActivity) getActivity()).getSupportActionBar() != null)
+        Log.d(TAG, "onPrepartionMenu of Search: ");
+        if (getActivity() != null && ((AppCompatActivity) getActivity()).getSupportActionBar() != null)
             ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 

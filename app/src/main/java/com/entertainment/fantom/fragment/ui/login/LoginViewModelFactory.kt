@@ -2,8 +2,8 @@ package com.entertainment.fantom.fragment.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.entertainment.fantom.fragment.data.LoginDataSource
-import com.entertainment.fantom.fragment.data.LoginRepository
+import com.entertainment.fantom.data.data.LoginDataSource
+import com.entertainment.fantom.data.data.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

@@ -4,9 +4,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -42,10 +40,10 @@ class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var verificationId: String
     private lateinit var enterPhoneNo: EditText
-    private lateinit var logInButton : Button
+    private lateinit var logInButton: Button
     private lateinit var progressDialog: ProgressDialog
     private val sharedPreferences: SharedPreferences? by lazy {
-       context?.getSharedPreferences("app", Context.MODE_PRIVATE)
+        context?.getSharedPreferences("app", Context.MODE_PRIVATE)
     }
 
     override fun onCreateView(
@@ -69,7 +67,7 @@ class LoginFragment : Fragment() {
                 val text = if (isLogin) "Welcome to Fraternity" else "Sending verification code"
                 progressDialog = Utils.progressDialog(context, text)
                 if (!isLogin)
-                 sendVerificationCode(phone)
+                    sendVerificationCode(phone)
             }
         }
 
@@ -142,7 +140,7 @@ class LoginFragment : Fragment() {
                                     detailObject.phoneNum = num
                                     FirebaseDatabase.getInstance().getReference("users").push()
                                         .child("phoneNumber").setValue(num).addOnSuccessListener {
-                                           openHomeFragment(userId, num)
+                                            openHomeFragment(userId, num)
                                         }
                                 }
 
@@ -160,7 +158,7 @@ class LoginFragment : Fragment() {
             }
     }
 
-    private fun openHomeFragment(userId: String?, phoneNum : String?) {
+    private fun openHomeFragment(userId: String?, phoneNum: String?) {
         isLogin = true
         sharedPreferences?.edit()?.apply {
             putBoolean("isLogin", isLogin)
@@ -172,7 +170,7 @@ class LoginFragment : Fragment() {
         fragmentManager?.let {
             val fragmentTransaction = it.beginTransaction()
             val fragment = HomeFragment.newInstance("isLoggedIn", "");
-            fragmentTransaction.replace(R.id.fragment, fragment)
+            fragmentTransaction.replace(R.id.fragment_container, fragment)
             fragmentTransaction.commit()
         }
     }

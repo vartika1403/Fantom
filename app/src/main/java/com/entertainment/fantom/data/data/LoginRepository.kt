@@ -1,6 +1,6 @@
-package com.entertainment.fantom.fragment.data
+package com.entertainment.fantom.data.data
 
-import com.entertainment.fantom.fragment.data.model.LoggedInUser
+import com.entertainment.fantom.data.data.model.LoggedInUser
 
 /**
  * Class that requests authentication and user information from the remote data source and
