@@ -1,7 +1,9 @@
 package com.entertainment.fantom.fragment;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +30,7 @@ import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment implements MenuProvider {
     public static final String TAG = "HomeFragment";
@@ -99,7 +102,7 @@ public class HomeFragment extends Fragment implements MenuProvider {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().getActionBar().show();
+
     }
 
 
@@ -111,7 +114,7 @@ public class HomeFragment extends Fragment implements MenuProvider {
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.add_profile) {
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             Fragment fragment = ProfileFragment.newInstance(new DetailObject(), true);
             fragmentTransaction.replace(R.id.fragment_container, fragment);
@@ -179,16 +182,16 @@ public class HomeFragment extends Fragment implements MenuProvider {
         fragmentTransaction.commit();
     }
 
-  /*  @Override
+    @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        Log.d(TAG, "onPrepartionMenu of Home: " );
-        ActionBar actionBar= Objects.requireNonNull(getActivity()).getActionBar();
+        Log.d(TAG, "onPrepartionMenu of Home: ");
+        ActionBar actionBar = Objects.requireNonNull(getActivity()).getActionBar();
         Log.d(TAG, "onPrepartionMenu action bar, " + actionBar);
         if (actionBar != null) {
             actionBar.show();
         }
-    }*/
+    }
 
     /*@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

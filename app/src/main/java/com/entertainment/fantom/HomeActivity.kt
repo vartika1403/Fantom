@@ -49,7 +49,7 @@ class HomeActivity : AppCompatActivity() {
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val fragment: Fragment = ProfileFragment.newInstance(DetailObject(), true)
                 fragmentTransaction.replace(R.id.fragment_container, fragment)
-                fragmentTransaction.addToBackStack(HomeFragment.TAG)
+                fragmentTransaction.addToBackStack(ProfileFragment.TAG)
                 fragmentTransaction.commit()
             }
         }
@@ -70,10 +70,18 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val count = supportFragmentManager.backStackEntryCount
-        Log.d(TAG, "count , $count fragment name: $this")
+        val currentFragment = supportFragmentManager
+            .findFragmentById(R.id.fragment_container)
+
+        Log.d(TAG, "count frag, $count fragment name: $currentFragment")
+
         if (count == 1) {
             finish()
         } else {
+
+
+            supportActionBar?.show()
+
             supportFragmentManager.popBackStack()
         }
     }

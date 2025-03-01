@@ -4,6 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class DetailObject implements Parcelable {
+    public static final Creator<DetailObject> CREATOR = new Creator<DetailObject>() {
+        @Override
+        public DetailObject createFromParcel(Parcel in) {
+            return new DetailObject(in);
+        }
+
+        @Override
+        public DetailObject[] newArray(int size) {
+            return new DetailObject[size];
+        }
+    };
     private String userId;
     private String name;
     private String email;
@@ -16,15 +27,14 @@ public class DetailObject implements Parcelable {
     public DetailObject() {
 
     }
-    public DetailObject(String userId, String name,String fbLink,  String webLink,
+
+    public DetailObject(String userId, String name, String fbLink, String webLink,
                         String image, String phoneNumber, String category) {
         this.userId = userId;
         this.fbLink = fbLink;
         this.name = name;
         this.webLink = webLink;
         this.image = image;
-        this.phoneNumber = phoneNumber;
-        this.category = category;
     }
 
     protected DetailObject(Parcel in) {
@@ -36,18 +46,6 @@ public class DetailObject implements Parcelable {
         phoneNumber = in.readString();
         category = in.readString();
     }
-
-    public static final Creator<DetailObject> CREATOR = new Creator<DetailObject>() {
-        @Override
-        public DetailObject createFromParcel(Parcel in) {
-            return new DetailObject(in);
-        }
-
-        @Override
-        public DetailObject[] newArray(int size) {
-            return new DetailObject[size];
-        }
-    };
 
     public String getUserId() {
         return userId;
@@ -105,13 +103,14 @@ public class DetailObject implements Parcelable {
         this.email = email;
     }
 
+    public String getPhoneNum() {
+        return phoneNumber;
+    }
+
     public void setPhoneNum(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPhoneNum() {
-        return phoneNumber;
-    }
     public String getCategory() {
         return category;
     }
@@ -119,6 +118,7 @@ public class DetailObject implements Parcelable {
     public void setCategory(String category) {
         this.category = category;
     }
+
     @Override
     public int describeContents() {
         return 0;

@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:layout_height="wrap_content">
+    android:padding="20dp">
+
     <include
         android:id="@+id/user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         layout="@layout/details_card_view"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <include
         android:id="@+id/email_details"
-        android:layout_marginTop="20dp"
+        layout="@layout/details_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/details_card_view"
-        />
+        android:layout_marginTop="20dp" />
+
     <include
         android:id="@+id/web_link"
-        android:layout_marginTop="20dp"
+        layout="@layout/details_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/details_card_view"
-        />
+        android:layout_marginTop="20dp" />
+
     <include
         android:id="@+id/instagram_details"
-        android:layout_marginTop="20dp"
+        layout="@layout/details_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/details_card_view"
-        />
+        android:layout_marginTop="20dp" />
 
     <include
         android:id="@+id/categories"
-        android:visibility="gone"
-        android:layout_marginTop="20dp"
+        layout="@layout/details_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/details_card_view"/>
+        android:layout_marginTop="20dp"
+        android:visibility="gone" />
 </androidx.appcompat.widget.LinearLayoutCompat>

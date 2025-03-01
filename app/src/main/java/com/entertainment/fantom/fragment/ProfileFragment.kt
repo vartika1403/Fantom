@@ -250,7 +250,7 @@ class ProfileFragment : Fragment() {
 
 
     companion object {
-        private val TAG = ProfileFragment::class.java.simpleName
+        val TAG = ProfileFragment::class.java.simpleName
         private const val DETAIL_OBJECT = "detail_obj"
         private const val IS_USER_PROFILE = "isUserProfile"
 
