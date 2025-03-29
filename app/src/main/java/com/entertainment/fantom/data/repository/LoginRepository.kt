@@ -1,5 +1,7 @@
-package com.entertainment.fantom.data.data
+package com.entertainment.fantom.data.repository
 
+import com.entertainment.fantom.data.data.LoginDataSource
+import com.entertainment.fantom.data.data.Result
 import com.entertainment.fantom.data.data.model.LoggedInUser
 
 /**

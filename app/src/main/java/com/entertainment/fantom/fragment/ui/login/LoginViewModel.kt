@@ -4,8 +4,8 @@ import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.entertainment.fantom.data.data.LoginRepository
 import com.entertainment.fantom.data.data.Result
+import com.entertainment.fantom.data.repository.LoginRepository
 
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
