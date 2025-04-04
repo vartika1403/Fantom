@@ -39,8 +39,10 @@ public class EntityListAdapter extends RecyclerView.Adapter<EntityListAdapter.En
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SearchInterface searchInterface = (SearchInterface) context;
-                searchInterface.setData(detailObjectList.get(position));
+                if (context!= null){
+                    SearchInterface searchInterface = (SearchInterface) context;
+                    searchInterface.setData(detailObjectList.get(position));
+                }
             }
         });
     }
@@ -57,5 +59,32 @@ public class EntityListAdapter extends RecyclerView.Adapter<EntityListAdapter.En
             super(itemView);
             entityName = (TextView)itemView.findViewById(R.id.item_text);
         }
+    }
+
+    public void updateList(List<DetailObject> newList) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return detailObjectList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newList.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return detailObjectList.get(oldItemPosition).getUserId().equals(newList.get(newItemPosition).getUserId());
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return detailObjectList.get(oldItemPosition).equals(newList.get(newItemPosition));
+            }
+        });
+
+        detailObjectList = newList;
+        diffResult.dispatchUpdatesTo(this);
     }
 }

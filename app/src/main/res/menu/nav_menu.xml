@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/userProfileFragmentMenu"
+        android:icon="@drawable/profile_icon_basecolor"
+        android:title="Profile" />
+    <item
+        android:id="@+id/searchFragmentMenu"
+        android:icon="@drawable/search_bar"
+        android:title="Search" />
+    <item
+        android:id="@+id/logoutMenu"
+        android:icon="@drawable/logout_icon"
+        android:title="Logout" />
+</menu>

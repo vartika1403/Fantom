@@ -31,4 +31,24 @@
     <string name="please_enter_correct_email_address">"Please enter correct email address "</string>
     <string name="please_try_again_later">Please try again later</string>
     <string name="saving_data">Saving data</string>
+    <string name="create_your_profile">Create Your Profile</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="facebook">Facebook</string>
+    <string name="website">Website</string>
+    <string name="email">Email</string>
+    <string name="category">Category</string>
+    <string name="full_name">Full Name</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="get_otp">Get Otp</string>
+    <string name="no_results_found_n_we_will_be_back_with_updated_data">No results found! \n We will be back with updated data.</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="fraternity">Fraternity</string>
+    <string name="search_here">Search here...</string>
+    <string name="looking_for_bands_for_events">Looking for Bands for events</string>
+    <string name="network_issue_please_try_again">Network issue , please try again</string>
+    <string name="logout">logout</string>
+    <string name="please_enter_correct_details">"Please enter correct details: "</string>
+    <string name="enter_user_band_name">Enter User/Band name</string>
+    <string name="enter_weblink">Enter weblink</string>
+    <string name="enter_instagram_link">Enter instagram link</string>
 </resources>
