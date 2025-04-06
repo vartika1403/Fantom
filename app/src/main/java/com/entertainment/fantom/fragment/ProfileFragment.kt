@@ -4,12 +4,11 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -78,14 +77,10 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         arguments?.let {
             detailObject = it.getParcelable(DETAIL_OBJECT)
             isUserProfile = it.getBoolean(IS_USER_PROFILE)
         }
-
-
-        (activity as? AppCompatActivity)?.supportActionBar?.hide()
 
         initListeners()
 
@@ -109,7 +104,8 @@ class ProfileFragment : Fragment() {
                 if (value) {
                     profileViewModel.saveData()
                 } else {
-                    Toast.makeText(context, "Please enter correct details: ", Toast.LENGTH_SHORT)
+                    Toast.makeText(context,
+                        getString(R.string.please_enter_correct_details), Toast.LENGTH_SHORT)
                         .show()
                 }
             }
@@ -150,29 +146,40 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initListeners() {
-        binding.userDetail.userName.userDetailEditText.addTextChangedListener {
-            if (it != null && it.toString().isNotEmpty()) {
-                profileViewModel.setUserName(it.toString())
 
+        binding.userDetail.userName.userDetailEditText.apply {
+            hint = context.getString(R.string.enter_user_band_name)
+            addTextChangedListener {
+                if (it != null && it.toString().isNotEmpty()) {
+                    profileViewModel.setUserName(it.toString())
+                }
             }
         }
 
-        binding.userDetail.emailDetails.userDetailEditText.addTextChangedListener {
-            if (it != null && it.toString().trim().isNotEmpty()) {
-                profileViewModel.setEmailAddress(it.toString())
-
+        binding.userDetail.emailDetails.userDetailEditText.apply {
+            hint = context.getString(R.string.enter_email_address)
+            addTextChangedListener {
+                if (it != null && it.toString().trim().isNotEmpty()) {
+                    profileViewModel.setEmailAddress(it.toString())
+                }
             }
         }
 
-        binding.userDetail.webLink.userDetailEditText.addTextChangedListener {
-            if (it.toString().isNotEmpty()) {
-                profileViewModel.setWebLink(it.toString())
+        binding.userDetail.webLink.userDetailEditText.apply {
+            hint = context.getString(R.string.enter_weblink)
+            addTextChangedListener {
+                if (it != null && it.toString().isNotEmpty()) {
+                    profileViewModel.setWebLink(it.toString())
+                }
             }
         }
 
-        binding.userDetail.instagramDetails.userDetailEditText.addTextChangedListener {
-            if (it.toString().isNotEmpty()) {
-                profileViewModel.setInstagramLink(it.toString())
+        binding.userDetail.instagramDetails.userDetailEditText.apply {
+            hint = context.getString(R.string.enter_instagram_link)
+            addTextChangedListener {
+                if (it != null && it.toString().isNotEmpty()) {
+                    profileViewModel.setInstagramLink(it.toString())
+                }
             }
         }
     }
@@ -223,7 +230,7 @@ class ProfileFragment : Fragment() {
                 }
 
                 if (isUserProfile) {
-                    val array_adapter = activity?.let { activity ->
+                 /*   val array_adapter = activity?.let { activity ->
                         ArrayAdapter(
                             activity,
                             android.R.layout.simple_spinner_item,
@@ -236,18 +243,56 @@ class ProfileFragment : Fragment() {
                     categories.spinner.visibility = View.VISIBLE
                     categories.spinner.adapter = array_adapter
                     selectedItem = categories.spinner.selectedItem as String
-                    profileViewModel.setCategory(selectedItem)
+                    profileViewModel.setCategory(selectedItem)*/
+
+                    setupCategorySpinner(isUserProfile)
                 }
             }
         }
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        /* if (activity != null && (activity as AppCompatActivity?)?.supportActionBar != null) (activity as AppCompatActivity?)?.supportActionBar!!
-             .hide()*/
-    }
 
+    private fun setupCategorySpinner(isSpinnerVisible: Boolean) {
+        binding.userDetail.categories.apply {
+            root.visibility = View.VISIBLE
+
+            if (isSpinnerVisible) {
+                userDetailEditText.visibility = View.GONE
+                spinnerLayout?.visibility = View.VISIBLE
+                spinner.visibility = View.VISIBLE
+
+                val activityContext = activity ?: return
+
+                val arrayAdapter = ArrayAdapter(
+                    activityContext,
+                    R.layout.spinner_text,
+                    categories_list_items
+                )
+
+                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner.adapter = arrayAdapter
+                spinner.setSelection(0) // Default selection
+
+                spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        selectedItem = categories_list_items[position]
+                        profileViewModel.setCategory(selectedItem)
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {}
+                }
+
+            } else {
+                userDetailEditText.visibility = View.VISIBLE
+                spinnerLayout?.visibility = View.GONE
+            }
+        }
+    }
 
     companion object {
         val TAG = ProfileFragment::class.java.simpleName

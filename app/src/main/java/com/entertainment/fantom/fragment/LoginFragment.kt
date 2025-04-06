@@ -13,7 +13,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.NonNull
+
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.entertainment.fantom.DetailObject
 import com.entertainment.fantom.R
 import com.entertainment.fantom.utils.Utils
@@ -166,15 +169,13 @@ class LoginFragment : Fragment() {
             putString("userId", userId)
             apply()
         }
-        val fragmentManager = activity?.supportFragmentManager
-        fragmentManager?.let {
-            val fragmentTransaction = it.beginTransaction()
-            val fragment = HomeFragment.newInstance("isLoggedIn", "");
-            fragmentTransaction.replace(R.id.fragment_container, fragment)
-            fragmentTransaction.commit()
-        }
-    }
 
+        findNavController().navigate(R.id.homeFragment, null,
+            NavOptions.Builder()
+                .setPopUpTo(R.id.loginFragment, true)
+                .build()
+        )
+    }
 
     companion object {
         private const val TAG = "LoginFragment"

@@ -5,21 +5,23 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +33,7 @@ import com.entertainment.fantom.utils.Utils;
 import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -53,6 +56,10 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
     private LinearLayoutManager linearLayoutManager;
     private TextView notAvailableText;
 
+    private EditText searchEditText;
+
+    private List<DetailObject> fullItemList = new ArrayList<>();
+
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -72,13 +79,14 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
             context = this;
             entityName = getArguments().getString(ARG_PARAM1);
         }
+
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         setRetainInstance(true);
 
@@ -86,6 +94,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         homeViewModel.setEntityName(entityName);
         recyclerView = view.findViewById(R.id.recycler_view);
         notAvailableText = view.findViewById(R.id.not_available_text);
+        searchEditText = view.findViewById(R.id.searchEditText);
 
         dialog = Utils.progressDialog(getActivity(), "");
         subscribeToLiveData();
@@ -98,7 +107,20 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
 
         firebaseAnalytics.setAnalyticsCollectionEnabled(true);
         firebaseAnalytics.setMinimumSessionDuration(1000);
-        setHasOptionsMenu(true);
+
+        
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filterList(s.toString());
+            }
+        });
 
         return view;
     }
@@ -110,6 +132,8 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
                 notAvailableText.setVisibility(View.VISIBLE);
             } else {
                 notAvailableText.setVisibility(View.GONE);
+                fullItemList.clear();  
+                fullItemList.addAll(detailObjectList);  
                 setDataToAdapter(detailObjectList);
             }
             dialog.dismiss();
@@ -123,7 +147,6 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         linearLayoutManager.setSmoothScrollbarEnabled(true);
         linearLayoutManager.onRestoreInstanceState(recyclerViewState);
         recyclerView.setLayoutManager(linearLayoutManager);
-
         recyclerView.setAdapter(adapter);
     }
 
@@ -137,39 +160,20 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         super.onDetach();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Get item selected and deal with it
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                //called when the up affordance/carat in actionbar is pressed
-                return true;
-        }
-        return false;
-    }
 
     @Override
     public void setData(DetailObject detailObject) {
-        if (detailObject != null) {
+        if (detailObject != null  && getView() != null) {
             Bundle bundle = new Bundle();
             bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, detailObject.getName());
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            Fragment fragment = ProfileFragment.newInstance(detailObject, false);
-            fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.addToBackStack(TAG);
-            fragmentTransaction.commit();
-        }
-    }
 
-    @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        Log.d(TAG, "onPrepartionMenu of Search: ");
-        if (getActivity() != null && ((AppCompatActivity) getActivity()).getSupportActionBar() != null)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+            Bundle navBundle = new Bundle();
+            navBundle.putParcelable("detail_object", detailObject);
+            NavController navController = Navigation.findNavController(requireView());
+            navController.navigate(R.id.action_searchFragment_to_profileFragment, bundle);
+        }
     }
 
     @Override
@@ -181,6 +185,46 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
             recyclerViewState = linearLayoutManager.onSaveInstanceState();
             state.putParcelable("state", recyclerViewState);
         }
+    }
+
+    private void filterList(String query) {
+        List<DetailObject> filteredList = new ArrayList<>();
+
+        for (DetailObject item : fullItemList) {
+            if (item.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(item);
+            }
+        }
+
+        adapter.updateList(filteredList);
+
+        if (filteredList.isEmpty()) {
+            notAvailableText.setVisibility(View.VISIBLE);
+        } else {
+            notAvailableText.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
+    }
+
+      @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menu.clear();
+        menuInflater.inflate(R.menu.menu, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.add_profile) {
+            NavController navController = Navigation.findNavController(requireView());
+            navController.navigate(R.id.action_searchFragment_to_profileFragment);
+            return true;
+        }
+        return false;
     }
 }
 
