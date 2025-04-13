@@ -44,7 +44,7 @@ import java.util.List;
 public class SearchFragment extends HomeFragment implements SearchInterface {
     private static final String TAG = SearchFragment.class.getSimpleName();
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM1 = "selectedRole";
     private HomeViewModel homeViewModel;
     private String entityName;
     private RecyclerView recyclerView;
@@ -96,7 +96,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         notAvailableText = view.findViewById(R.id.not_available_text);
         searchEditText = view.findViewById(R.id.searchEditText);
 
-        dialog = Utils.progressDialog(getActivity(), "");
+        dialog = Utils.showProgressDialog(getActivity(), "");
         subscribeToLiveData();
         //logs view event for search fragment
         firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
@@ -108,13 +108,15 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         firebaseAnalytics.setAnalyticsCollectionEnabled(true);
         firebaseAnalytics.setMinimumSessionDuration(1000);
 
-        
+
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -132,8 +134,8 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
                 notAvailableText.setVisibility(View.VISIBLE);
             } else {
                 notAvailableText.setVisibility(View.GONE);
-                fullItemList.clear();  
-                fullItemList.addAll(detailObjectList);  
+                fullItemList.clear();
+                fullItemList.addAll(detailObjectList);
                 setDataToAdapter(detailObjectList);
             }
             dialog.dismiss();
@@ -163,7 +165,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
 
     @Override
     public void setData(DetailObject detailObject) {
-        if (detailObject != null  && getView() != null) {
+        if (detailObject != null && getView() != null) {
             Bundle bundle = new Bundle();
             bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, detailObject.getName());
@@ -211,7 +213,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         requireActivity().addMenuProvider(this, getViewLifecycleOwner());
     }
 
-      @Override
+    @Override
     public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         menu.clear();
         menuInflater.inflate(R.menu.menu, menu);

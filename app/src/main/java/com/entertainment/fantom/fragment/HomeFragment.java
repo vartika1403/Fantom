@@ -65,11 +65,11 @@ public class HomeFragment extends Fragment implements MenuProvider {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentHomeBinding = FragmentHomeBinding.inflate(inflater);
-        dialog = Utils.progressDialog(getActivity(), "");
+        dialog = Utils.showProgressDialog(getActivity(), "");
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
         Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ORIGIN, "HomeFragment");
+        bundle.putString(FirebaseAnalytics.Param.ORIGIN, TAG);
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
         firebaseAnalytics.setAnalyticsCollectionEnabled(true);
         firebaseAnalytics.setMinimumSessionDuration(1000);

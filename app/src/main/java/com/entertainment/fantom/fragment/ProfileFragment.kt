@@ -129,14 +129,14 @@ class ProfileFragment : Fragment() {
 
                 is Resource.Success -> {
                     Log.d("vartika", "result is successfully saved")
-                    val dialog = Utils.progressDialog(activity, resource.data)
+                    val dialog = Utils.showProgressDialog(activity, resource.data)
                     dialog.show()
                     dialog.setCanceledOnTouchOutside(true)
                     requireActivity().getSupportFragmentManager().popBackStack()
                 }
 
                 is Resource.Loading -> {
-                    val dialog = Utils.progressDialog(activity, getString(R.string.saving_data))
+                    val dialog = Utils.showProgressDialog(activity, getString(R.string.saving_data))
                     dialog.show()
                     dialog.setCanceledOnTouchOutside(true)
 

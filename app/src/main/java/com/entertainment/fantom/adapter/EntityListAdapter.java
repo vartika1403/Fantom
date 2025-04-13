@@ -1,10 +1,12 @@
 package com.entertainment.fantom.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.entertainment.fantom.DetailObject;
@@ -23,26 +25,24 @@ public class EntityListAdapter extends RecyclerView.Adapter<EntityListAdapter.En
         this.detailObjectList = detailObjectList;
         this.context = context;
     }
+
     @Override
     public EntityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.selected_item, parent,  false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.selected_item, parent, false);
         return new EntityViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(EntityViewHolder holder, int position) {
+    public void onBindViewHolder(EntityViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if (holder != null) {
             if (detailObjectList.get(position) != null)
                 holder.entityName.setText(detailObjectList.get(position).getName());
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (context!= null){
-                    SearchInterface searchInterface = (SearchInterface) context;
-                    searchInterface.setData(detailObjectList.get(position));
-                }
+        holder.itemView.setOnClickListener(view -> {
+            if (context != null) {
+                SearchInterface searchInterface = context;
+                searchInterface.setData(detailObjectList.get(position));
             }
         });
     }
@@ -50,15 +50,6 @@ public class EntityListAdapter extends RecyclerView.Adapter<EntityListAdapter.En
     @Override
     public int getItemCount() {
         return detailObjectList.size();
-    }
-
-    protected class EntityViewHolder extends RecyclerView.ViewHolder {
-        public TextView entityName;
-
-        public EntityViewHolder(View itemView) {
-            super(itemView);
-            entityName = (TextView)itemView.findViewById(R.id.item_text);
-        }
     }
 
     public void updateList(List<DetailObject> newList) {
@@ -86,5 +77,14 @@ public class EntityListAdapter extends RecyclerView.Adapter<EntityListAdapter.En
 
         detailObjectList = newList;
         diffResult.dispatchUpdatesTo(this);
+    }
+
+    protected class EntityViewHolder extends RecyclerView.ViewHolder {
+        public TextView entityName;
+
+        public EntityViewHolder(View itemView) {
+            super(itemView);
+            entityName = (TextView) itemView.findViewById(R.id.item_text);
+        }
     }
 }

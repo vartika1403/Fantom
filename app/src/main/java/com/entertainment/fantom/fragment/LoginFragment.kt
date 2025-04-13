@@ -57,7 +57,7 @@ class LoginFragment : Fragment() {
         Log.d(TAG, "sharedPref, " + context)
         auth = FirebaseAuth.getInstance()
         isLogin = sharedPreferences?.getBoolean("isLogin", false) ?: false
-        logInButton = view.findViewById<Button>(R.id.logInButton)
+        logInButton = view.findViewById(R.id.logInButton)
         enterPhoneNo = view.findViewById(R.id.enterPhoneNo)
         logInButton.text = "Get Otp"
         Log.d(TAG, "Login 1: " + isLogin)
@@ -68,9 +68,12 @@ class LoginFragment : Fragment() {
             } else {
                 val phone = "+91" + enterPhoneNo.getText().toString()
                 val text = if (isLogin) "Welcome to Fraternity" else "Sending verification code"
-                progressDialog = Utils.progressDialog(context, text)
-                if (!isLogin)
+                progressDialog = Utils.showProgressDialog(context, text)
+                if (!isLogin) {
                     sendVerificationCode(phone)
+                } else {
+                    progressDialog.dismiss()
+                }
             }
         }
 
@@ -115,6 +118,8 @@ class LoginFragment : Fragment() {
             // sends our OTP code due to any error or issue.
             override fun onVerificationFailed(e: FirebaseException) {
                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                progressDialog.dismiss()
+                Log.d(TAG, "Login error: " + e.message)
             }
         }
 
@@ -146,7 +151,6 @@ class LoginFragment : Fragment() {
                                             openHomeFragment(userId, num)
                                         }
                                 }
-
                             }
 
                             override fun onCancelled(@NonNull databaseError: DatabaseError) {}
