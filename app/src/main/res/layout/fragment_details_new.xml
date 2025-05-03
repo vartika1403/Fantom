@@ -11,8 +11,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,17 +26,67 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_32dp"
                 android:text="@string/create_your_profile"
+                android:textColor="@color/baseColor"
                 android:textSize="@dimen/_24sp"
-                android:textStyle="bold"
-                android:textColor="@color/baseColor" />
+                android:textStyle="bold" />
 
-            <include
-                android:visibility="visible"
-                android:id="@+id/user_detail"
-                layout="@layout/user_details"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16dp"/>
+                android:layout_marginTop="@dimen/_12dp"
+                android:text="Sangeeta Chakraborty"
+                android:textColor="@color/baseColor"
+                android:textSize="@dimen/_22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4dp"
+                android:text="Female Singer"
+                android:textColor="@color/baseColor"
+                android:textSize="@dimen/_16sp" />
+
+            <TextView
+                android:id="@+id/tv_website"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Website"
+                android:textColor="@color/baseColor"
+                android:textSize="@dimen/_14sp" />
+
+            <TextView
+                android:id="@+id/tv_website_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_12dp"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="www.sangeeta06.com"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/_16sp" />
+
+            <TextView
+                android:id="@+id/tv_facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="Facebook"
+                android:textColor="@color/baseColor"
+                android:textSize="@dimen/_14sp" />
+
+            <TextView
+                android:id="@+id/tv_facebook_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="facebook.com/sangeeta06"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/_16sp" />
 
             <Button
                 android:id="@+id/save_profile"
@@ -46,7 +96,7 @@
                 android:background="@drawable/button_background"
                 android:text="@string/save_button"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/_16sp"/>
+                android:textSize="@dimen/_16sp" />
         </LinearLayout>
     </ScrollView>
 

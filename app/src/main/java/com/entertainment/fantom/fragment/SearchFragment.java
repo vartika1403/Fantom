@@ -1,5 +1,7 @@
 package com.entertainment.fantom.fragment;
 
+import static com.entertainment.fantom.utils.Constant.DETAIL_OBJECT;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Build;
@@ -29,8 +31,12 @@ import com.entertainment.fantom.DetailObject;
 import com.entertainment.fantom.R;
 import com.entertainment.fantom.SearchInterface;
 import com.entertainment.fantom.adapter.EntityListAdapter;
+import com.entertainment.fantom.data.Resource;
+import com.entertainment.fantom.data.repository.SearchRepository;
 import com.entertainment.fantom.utils.Utils;
 import com.entertainment.fantom.viewmodel.HomeViewModel;
+import com.entertainment.fantom.viewmodel.SearchViewModel;
+import com.entertainment.fantom.viewmodel.SearchViewModelFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
@@ -60,6 +66,9 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
 
     private List<DetailObject> fullItemList = new ArrayList<>();
 
+    private SearchViewModel searchViewModel;
+    private SearchRepository searchRepository;
+
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -77,7 +86,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             context = this;
-            entityName = getArguments().getString(ARG_PARAM1);
+            entityName = getArguments().getString("entityName");
         }
 
 
@@ -91,13 +100,14 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         setRetainInstance(true);
 
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        homeViewModel.setEntityName(entityName);
+        searchRepository = new SearchRepository();
+        searchViewModel = new SearchViewModelFactory(searchRepository).create(SearchViewModel.class);
         recyclerView = view.findViewById(R.id.recycler_view);
         notAvailableText = view.findViewById(R.id.not_available_text);
         searchEditText = view.findViewById(R.id.searchEditText);
 
         dialog = Utils.showProgressDialog(getActivity(), "");
-        subscribeToLiveData();
+        fetchSearchResult();
         //logs view event for search fragment
         firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         //logs view event
@@ -127,18 +137,21 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         return view;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void subscribeToLiveData() {
-        homeViewModel.getDataFromFirebase().observe(getViewLifecycleOwner(), detailObjectList -> {
-            if (detailObjectList == null || detailObjectList.size() == 0) {
-                notAvailableText.setVisibility(View.VISIBLE);
-            } else {
+    private void fetchSearchResult() {
+        searchViewModel.loadSearchResultsFromEntityType(entityName);
+        searchViewModel.getSearchResults().observe(getViewLifecycleOwner(), resource -> {
+            if (resource instanceof Resource.Loading) {
+                dialog.show();
                 notAvailableText.setVisibility(View.GONE);
-                fullItemList.clear();
-                fullItemList.addAll(detailObjectList);
-                setDataToAdapter(detailObjectList);
+            } else if (resource instanceof Resource.Success) {
+                dialog.dismiss();
+                setDataToAdapter(((Resource.Success<List<DetailObject>>) resource).getData());
+                notAvailableText.setVisibility(View.GONE);
+            } else if (resource instanceof Resource.Error) {
+                dialog.dismiss();
+                notAvailableText.setVisibility(View.VISIBLE);
+
             }
-            dialog.dismiss();
         });
     }
 
@@ -172,9 +185,9 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
             Bundle navBundle = new Bundle();
-            navBundle.putParcelable("detail_object", detailObject);
+            navBundle.putParcelable(DETAIL_OBJECT, detailObject);
             NavController navController = Navigation.findNavController(requireView());
-            navController.navigate(R.id.action_searchFragment_to_profileFragment, bundle);
+            navController.navigate(R.id.action_searchFragment_to_profileFragment, navBundle);
         }
     }
 

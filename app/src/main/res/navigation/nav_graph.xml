@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.entertainment.fantom.fragment.ProfileFragment"
-        android:label="Create Profile" />
+        android:label="Profile" />
 
     <fragment
         android:id="@+id/homeFragment"
@@ -53,25 +53,25 @@
     <fragment
         android:id="@+id/userProfileFragment"
         android:name="com.entertainment.fantom.fragment.UserProfileFragment"
-        android:label="User Profile" >
+        android:label="User Profile">
         <action
             android:id="@+id/action_userProfileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment">
-                <argument
-                    android:name="userName"
-                    app:argType="string" />
-                <argument
-                    android:name="userEmail"
-                    app:argType="string" />
-                <argument
-                    android:name="userPhone"
-                    app:argType="string" />
-                <argument
-                    android:name="userWebsite"
-                    app:argType="string" />
-                <argument
-                    android:name="userFacebook"
-                    app:argType="string" />
+            <argument
+                android:name="userName"
+                app:argType="string" />
+            <argument
+                android:name="userEmail"
+                app:argType="string" />
+            <argument
+                android:name="userPhone"
+                app:argType="string" />
+            <argument
+                android:name="userWebsite"
+                app:argType="string" />
+            <argument
+                android:name="userFacebook"
+                app:argType="string" />
             <argument
                 android:name="userCategory"
                 app:argType="string" />
@@ -79,7 +79,7 @@
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
-        android:name="com.entertainment.fantom.EditProfileFragment"
+        android:name="com.entertainment.fantom.fragment.EditProfileFragment"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_edit_profile">
 

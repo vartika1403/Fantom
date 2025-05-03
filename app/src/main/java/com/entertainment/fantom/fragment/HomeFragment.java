@@ -1,6 +1,8 @@
 package com.entertainment.fantom.fragment;
 
 
+import static com.entertainment.fantom.utils.UiUtils.saveCategories;
+
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,7 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
-
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -78,6 +79,7 @@ public class HomeFragment extends Fragment implements MenuProvider {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedItem = (String) adapterView.getItemAtPosition(i);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -103,7 +105,7 @@ public class HomeFragment extends Fragment implements MenuProvider {
 
     @Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
-       // menu.clear();
+        // menu.clear();
         menuInflater.inflate(R.menu.menu, menu);
     }
 
@@ -137,11 +139,12 @@ public class HomeFragment extends Fragment implements MenuProvider {
     }
 
     public void setDataToSpinner(List<String> categories) {
-     //        categories.add(0, requireActivity().getString(R.string.spinner_title));
+        //        categories.add(0, requireActivity().getString(R.string.spinner_title));
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_text, categories);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fragmentHomeBinding.spinner.setAdapter(dataAdapter);
+        saveCategories(categories);
     }
 
     @Override
@@ -161,7 +164,7 @@ public class HomeFragment extends Fragment implements MenuProvider {
 
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         Bundle args = new Bundle();
-        args.putString("selectedItem", selectedItem);
+        args.putString("entityName", selectedItem);
         navController.navigate(R.id.searchFragment, args);
     }
 
