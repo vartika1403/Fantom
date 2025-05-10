@@ -4,15 +4,14 @@ import android.util.Log
 import com.entertainment.fantom.Conf
 import com.entertainment.fantom.DetailObject
 import com.entertainment.fantom.data.Resource
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.tasks.await
 
 class SearchRepository {
 
@@ -27,51 +26,44 @@ class SearchRepository {
     fun loadSearchResult(query: String): Flow<Resource<List<DetailObject>>> {
 
         return flow<Resource<List<DetailObject>>> {
-            val list: MutableList<DetailObject> = mutableListOf();
-            emit(Resource.Loading)
-            databaseReference.child(query).addValueEventListener(object :
-                ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (data in dataSnapshot.children) {
+            val list: MutableList<DetailObject> = mutableListOf()
+            try {
+                val snapshot = databaseReference.child(query).get().await()
+                if (snapshot.exists()) {
+                    for (data in snapshot.children) {
                         Log.d(
                             SearchRepository::class.java.toString(),
                             "snapshot data 1," + ", key," + data.key
                         )
-                        try {
-                            val detailObject = data.getValue(
-                                DetailObject::class.java
-                            )
+                        val detailObject = data.getValue(
+                            DetailObject::class.java
+                        )
+                        detailObject?.name = data.key
+                        val fbLink = detailObject?.fbLink
+                        val webLink = detailObject?.webLink
+                        val imageUrl = detailObject?.image
+                        Log.d(
+                            SearchRepository::class.java.toString(),
+                            "snapshot data 1 2," + fbLink + ", webLink," + webLink +
+                                    " image url," + imageUrl
+                        )
 
-                            detailObject?.name = data.key
-                            val fbLink = detailObject?.fbLink
-                            val webLink = detailObject?.webLink
-                            val imageUrl = detailObject?.image
-                            Log.d(
-                                SearchRepository::class.java.toString(),
-                                "snapshot data 1 2," + fbLink + ", webLink," + webLink +
-                                        " image url," + imageUrl
-                            )
-                            if (detailObject != null) {
-                                list.add(detailObject)
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                        if (detailObject != null) {
+                            list.add(detailObject)
                         }
-                        Log.d(SearchRepository::class.java.toString(), "snapshot data 2, $data")
                     }
+                    emit(Resource.Success(data = list))
                 }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.d("Count ", "databaseError " + databaseError.message)
-                }
-            })
-            /* if (list.isNotEmpty()) {
-                 emit(Resource.Success(data = list))
-             } else {
-                 emit(Resource.Error("No data found"))
-             }*/
-            emit(Resource.Success(data = list))
-        }.flowOn(Dispatchers.IO)
+            } catch (e: Exception) {
+                emit(Resource.Error(error = e.message ?: "Sorry data not found"))
+            }
+        }.flowOn(Dispatchers.IO).catch { e ->
+            emit(
+                Resource.Error(
+                    error = e.message ?: "Some error occurred , please try agai"
+                )
+            )
+        }
 
     }
 }

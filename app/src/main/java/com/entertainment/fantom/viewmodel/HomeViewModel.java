@@ -47,7 +47,7 @@ public class HomeViewModel extends ViewModel {
                     Log.d("Get Data", postSnapshot.getKey());
                     entityList.add(postSnapshot.getKey());
                 }
-                itemsLiveData.setValue(entityList);
+                itemsLiveData.postValue(entityList);
             }
 
             @Override

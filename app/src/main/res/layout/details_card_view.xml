@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:layout_margin="@dimen/_10dp">
+    android:layout_margin="@dimen/_10dp"
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/name_input_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/text_input_bg"
-            android:layout_margin="@dimen/_10dp"
-            app:boxBackgroundColor="@color/white"
-            app:boxBackgroundMode="filled"
-            app:boxStrokeColor="@color/baseColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/user_detail_edit_text"
+        <!--    <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name_input_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:inputType="text"
-                android:padding="@dimen/_5dp"
-                android:textColor="@color/baseColor"
-                android:textColorHint="@color/light_grey"
-                android:textSize="@dimen/_18sp"
-                android:visibility="visible" />
+                android:layout_margin="@dimen/_10dp"
+                app:boxBackgroundColor="@color/baseColor"
+                app:boxBackgroundMode="filled"
+                app:boxStrokeColor="@color/baseColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">-->
 
-        </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:id="@+id/user_detail_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:inputType="text"
+            android:linksClickable="true"
+            android:padding="@dimen/_5dp"
+            android:scrollHorizontally="true"
+            android:text=""
+            android:textColor="@color/baseColor"
+            android:textColorHint="@color/light_grey"
+            android:textSize="@dimen/_18sp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--
+                </com.google.android.material.textfield.TextInputLayout>
+        -->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/spinner_layout"

@@ -84,24 +84,8 @@ class ProfileViewModel(
                     detailsObject.webLink = _webLink.value
                 }
                 _detailObjectLiveData.postValue(Resource.Loading)
-                try {
-                    profileRepository.saveProfileData(detailsObject).collect { resource ->
-                        if (resource is Resource.Success<String>) {
-                            _detailObjectLiveData.postValue(resource)
-                        } else if (resource is Resource.Error) {
-                            _detailObjectLiveData.postValue(Resource.Error(resource.error))
-                        }
-                    }
-                } catch (e: Exception) {
-                    _detailObjectLiveData.postValue(Resource.Error(e.localizedMessage, false))
-                }
-
-                profileRepository.saveCategoryDataUtil(detailsObject).collect { resource ->
-                    if (resource is Resource.Success<String>) {
-                        _detailObjectLiveData.postValue(Resource.Success(resource.data))
-                    } else if (resource is Resource.Error) {
-                        _detailObjectLiveData.postValue(Resource.Error(resource.error))
-                    }
+                profileRepository.saveData(detailsObject).collect { resource ->
+                    _detailObjectLiveData.postValue(resource)
                 }
             }
         }

@@ -87,16 +87,6 @@
                 android:text="facebook.com/sangeeta06"
                 android:textColor="@color/blue"
                 android:textSize="@dimen/_16sp" />
-
-            <Button
-                android:id="@+id/save_profile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_16dp"
-                android:background="@drawable/button_background"
-                android:text="@string/save_button"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/_16sp" />
         </LinearLayout>
     </ScrollView>
 

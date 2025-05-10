@@ -8,4 +8,10 @@ public class Utils {
         return ProgressDialog.show(context, title,
                 "Loading. Please wait...", true);
     }
+
+    public static void hideProgressDialog(ProgressDialog dialog) {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
 }

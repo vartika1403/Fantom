@@ -1,18 +1,37 @@
 package com.entertainment.fantom.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+
 import androidx.navigation.fragment.findNavController
+import com.entertainment.fantom.R
+import com.entertainment.fantom.data.Resource
+import com.entertainment.fantom.data.repository.FetchUserDetailsRepository
 import com.entertainment.fantom.databinding.FragmentUserProfileBinding
+import com.entertainment.fantom.utils.Utils
+import com.entertainment.fantom.viewmodel.UserProfileViewModel
+import com.entertainment.fantom.viewmodel.UserProfileViewModelFactory
 
 
 class UserProfileFragment : Fragment() {
 
     private var _binding: FragmentUserProfileBinding? = null
     private val binding get() = _binding!!
+    private val fetchUserDetailsRepository by lazy {
+        FetchUserDetailsRepository()
+    }
+    private val userProfileViewModel by viewModels<UserProfileViewModel> {
+        UserProfileViewModelFactory(
+            context as Activity?,
+            fetchUserDetailsRepository
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +44,6 @@ class UserProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.layoutEditProfile.setOnClickListener {
-
             val action = UserProfileFragmentDirections
                 .actionUserProfileFragmentToEditProfileFragment(
                     userName = binding.tvName.text.toString(),
@@ -37,6 +55,38 @@ class UserProfileFragment : Fragment() {
                 )
             findNavController().navigate(action)
         }
+
+        fetchUserDetails()
+    }
+
+    private fun fetchUserDetails() {
+        userProfileViewModel.fetchUserDetails()
+        var progressDialog = Utils.showProgressDialog(context, "")
+        userProfileViewModel.userDetailObjectLiveData.observe(viewLifecycleOwner, { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    progressDialog = Utils.showProgressDialog(context, "")
+                }
+
+                is Resource.Success -> {
+                    binding.tvName.text = resource.data.name
+                    binding.tvEmail.text = resource.data.email
+                    binding.tvWebsite.text = resource.data.webLink
+                    binding.tvFacebook.text = resource.data.fbLink
+                    binding.tvCategory.text = resource.data.category
+
+                    Utils.hideProgressDialog(progressDialog)
+                }
+
+                is Resource.Error -> {
+                    Utils.hideProgressDialog(progressDialog)
+                    Toast.makeText(
+                        context,
+                        getString(R.string.please_try_again_later), Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        })
     }
 
     override fun onDestroyView() {

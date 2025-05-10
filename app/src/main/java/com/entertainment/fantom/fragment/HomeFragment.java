@@ -120,9 +120,11 @@ public class HomeFragment extends Fragment implements MenuProvider {
     }
 
     public void fetchItemsFromFirebase() {
-        // dialog.show();
+        //dialog.show();
+        // ProgressDialog dialog = Utils.showProgressDialog(getContext(), "");
         homeViewModel.getItemsFromFromFirebase().observe(getViewLifecycleOwner(), items -> {
-            // dialog.dismiss();
+            //  dialog.dismiss();
+            // Utils.hideProgressDialog(dialog);
             if (items != null) {
                 if (!items.isEmpty()) {
                     fragmentHomeBinding.spinner.setVisibility(View.VISIBLE);
