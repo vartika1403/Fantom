@@ -1,10 +1,12 @@
 package com.entertainment.fantom.fragment;
 
 
+import static android.view.View.VISIBLE;
 import static com.entertainment.fantom.utils.UiUtils.saveCategories;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +29,6 @@ import androidx.navigation.Navigation;
 import com.entertainment.fantom.R;
 import com.entertainment.fantom.databinding.FragmentHomeBinding;
 import com.entertainment.fantom.utils.UiUtils;
-import com.entertainment.fantom.utils.Utils;
 import com.entertainment.fantom.viewmodel.HomeViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -39,7 +40,8 @@ public class HomeFragment extends Fragment implements MenuProvider {
     private static final String ARG_PARAM2 = "param2";
     private FirebaseAnalytics firebaseAnalytics;
     private HomeViewModel homeViewModel;
-    private ProgressDialog dialog;
+    private ProgressDialog dialog = null;
+
 
     private String selectedItem;
     private FragmentHomeBinding fragmentHomeBinding;
@@ -66,7 +68,6 @@ public class HomeFragment extends Fragment implements MenuProvider {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentHomeBinding = FragmentHomeBinding.inflate(inflater);
-        dialog = Utils.showProgressDialog(getActivity(), "");
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         firebaseAnalytics = FirebaseAnalytics.getInstance(requireActivity());
         Bundle bundle = new Bundle();
@@ -87,7 +88,6 @@ public class HomeFragment extends Fragment implements MenuProvider {
         });
 
         homeViewModel.loadDataFromFirebase();
-        dialog.dismiss();
         fetchItemsFromFirebase();
 
         fragmentHomeBinding.joinButton.setOnClickListener(v -> {
@@ -120,15 +120,18 @@ public class HomeFragment extends Fragment implements MenuProvider {
     }
 
     public void fetchItemsFromFirebase() {
-        //dialog.show();
-        // ProgressDialog dialog = Utils.showProgressDialog(getContext(), "");
+        //  fragmentHomeBinding.progressBar.setVisibility(View.VISIBLE);
+        dialog = new ProgressDialog(getActivity());
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(true);
+        dialog.show();
+        new Handler().postDelayed(() -> dialog.dismiss(), 2500);
         homeViewModel.getItemsFromFromFirebase().observe(getViewLifecycleOwner(), items -> {
-            //  dialog.dismiss();
-            // Utils.hideProgressDialog(dialog);
+
             if (items != null) {
                 if (!items.isEmpty()) {
-                    fragmentHomeBinding.spinner.setVisibility(View.VISIBLE);
-                    fragmentHomeBinding.joinButton.setVisibility(View.VISIBLE);
+                    fragmentHomeBinding.spinner.setVisibility(VISIBLE);
+                    fragmentHomeBinding.joinButton.setVisibility(VISIBLE);
                     setDataToSpinner(items);
                 } else {
                     fragmentHomeBinding.spinner.setVisibility(View.GONE);
@@ -168,6 +171,14 @@ public class HomeFragment extends Fragment implements MenuProvider {
         Bundle args = new Bundle();
         args.putString("entityName", selectedItem);
         navController.navigate(R.id.searchFragment, args);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 
 }

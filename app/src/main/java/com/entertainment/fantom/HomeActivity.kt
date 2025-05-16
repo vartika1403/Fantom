@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import butterknife.ButterKnife
@@ -21,13 +20,14 @@ import com.entertainment.fantom.databinding.ActivityHomeBinding
 import com.entertainment.fantom.utils.UiUtils.hideToolbarAndDrawer
 import com.entertainment.fantom.utils.UiUtils.showToolbarAndDrawer
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private lateinit var drawerLayout: DrawerLayout
-    private var isLogin : Boolean = false
+    private var isLogin: Boolean = false
 
     private val sharedPreferences: SharedPreferences? by lazy {
         this.getSharedPreferences("app", Context.MODE_PRIVATE)
@@ -43,7 +43,7 @@ class HomeActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        navController = this.findNavController(R.id.nav_host_fragment)
         val navigationView: NavigationView = findViewById(R.id.navigation_view)
         drawerLayout = findViewById(R.id.drawer_layout)
 
@@ -57,11 +57,12 @@ class HomeActivity : AppCompatActivity() {
         }
 
         setupNavigationItemSelectedListener(navigationView, navController)
-
     }
 
-    private fun setupNavigationItemSelectedListener(navigationView: NavigationView,
-                                                    navController: NavController) {
+    private fun setupNavigationItemSelectedListener(
+        navigationView: NavigationView,
+        navController: NavController
+    ) {
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -69,16 +70,13 @@ class HomeActivity : AppCompatActivity() {
                     handleLogout(navController)
                     true
                 }
+
                 R.id.userProfileFragmentMenu -> {
                     navController.navigate(R.id.userProfileFragment)
                     drawerLayout.closeDrawers()
                     true
                 }
-                R.id.searchFragmentMenu -> {
-                    navController.navigate(R.id.searchFragment)
-                    drawerLayout.closeDrawers()
-                    true
-                }
+
                 else -> false
             }
         }
@@ -90,7 +88,7 @@ class HomeActivity : AppCompatActivity() {
         val editor = sharedPreferences?.edit()
         editor?.putBoolean("isLogin", false)
         editor?.apply()
-
+        FirebaseAuth.getInstance().signOut();
         navController.navigate(R.id.loginFragment)
         hideToolbarAndDrawer(this)
         Toast.makeText(this, getString(R.string.logout), Toast.LENGTH_SHORT).show()
@@ -107,17 +105,17 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(@NonNull item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.add_profile -> {
-                navController.navigate(R.id.profileFragment)
-                return true
-            }
-        }
+        /*  when (item.itemId) {
+              R.id.add_profile -> {
+                  navController.navigate(R.id.profileFragment)
+                  return true
+              }
+          }*/
         return super.onOptionsItemSelected(item)
     }
 
     private fun loadHomeFragment() {
-         isLogin = sharedPreferences?.getBoolean("isLogin", false) ?: false
+        isLogin = sharedPreferences?.getBoolean("isLogin", false) ?: false
         Log.d(TAG, "Login home: $isLogin")
 
         val navController = findNavController(R.id.nav_host_fragment)
@@ -130,17 +128,24 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val navController = findNavController(R.id.nav_host_fragment)
+        super.onBackPressed()
+        //  val navController = findNavController(R.id.nav_host_fragment)
         val currentDestination = navController.currentDestination?.id
         findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
 
-        Log.d(TAG, "back press: current fragment id = $currentDestination")
+        Log.d(
+            TAG,
+            "back press: current fragment id = ${navController.currentDestination?.id}"
+        )
 
         if (currentDestination == R.id.homeFragment) {
             finish()
+        } /*else if (!navController.navigateUp()) {
+            super.onBackPressed();
         } else {
             navController.navigateUp()
-        }
+
+        }*/
     }
 
     companion object {

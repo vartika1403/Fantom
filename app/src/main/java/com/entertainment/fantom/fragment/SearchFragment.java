@@ -21,7 +21,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.view.MenuProvider;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,7 +51,7 @@ import java.util.List;
  * created by vartika sharma
  * create an instance of this Search fragment.
  */
-public class SearchFragment extends HomeFragment implements SearchInterface {
+public class SearchFragment extends Fragment implements SearchInterface, MenuProvider {
     private static final String TAG = SearchFragment.class.getSimpleName();
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "selectedRole";
@@ -99,7 +103,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         setRetainInstance(true);
 
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(HomeViewModel.class);
         searchRepository = new SearchRepository();
         searchViewModel = new SearchViewModelFactory(searchRepository).create(SearchViewModel.class);
         recyclerView = view.findViewById(R.id.recycler_view);
@@ -139,7 +143,7 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
 
     private void fetchSearchResult() {
         searchViewModel.loadSearchResultsFromEntityType(entityName);
-        searchViewModel.getSearchResults().observe(getViewLifecycleOwner(), resource -> {
+        searchViewModel.getSearchResults().observe((LifecycleOwner) this, resource -> {
             if (resource instanceof Resource.Loading) {
                 dialog.show();
                 notAvailableText.setVisibility(View.GONE);
@@ -240,6 +244,14 @@ public class SearchFragment extends HomeFragment implements SearchInterface {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 }
 

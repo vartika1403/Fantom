@@ -11,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -67,10 +68,27 @@ class EditProfileFragment : Fragment() {
         val userFacebook = arguments?.let { EditProfileFragmentArgs.fromBundle(it).userFacebook }
         val userCategory = arguments?.let { EditProfileFragmentArgs.fromBundle(it).userCategory }
 
+        binding.userName.isVisible = userName.isNullOrEmpty().not()
         binding.userName.setText(userName)
+        if (userName != null) {
+            profileViewModel.setUserName(userName)
+        }
+        binding.userEmail.isVisible = userEmail.isNullOrEmpty().not()
+        if (userEmail != null) {
+            profileViewModel.setEmailAddress(userEmail)
+        }
         binding.userEmail.setText(userEmail)
+        binding.userPhone.isVisible = userPhone.isNullOrEmpty().not()
         binding.userPhone.setText(userPhone)
+        binding.userWebsite.isVisible = userWebsite.isNullOrEmpty().not()
         binding.userWebsite.setText(userWebsite)
+        if (userWebsite != null) {
+            profileViewModel.setWebLink(userWebsite)
+        }
+        binding.userFacebook.isVisible = userFacebook.isNullOrEmpty().not()
+        if (userFacebook != null) {
+            profileViewModel.setInstagramLink(userFacebook)
+        }
         binding.userFacebook.setText(userFacebook)
 
         initListeners()
