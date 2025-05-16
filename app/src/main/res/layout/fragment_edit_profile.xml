@@ -28,7 +28,8 @@
                 android:background="@drawable/image_profile_bg"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/profile_icon_basecolor" />
+                android:src="@drawable/profile_icon_basecolor"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_change_photo"
@@ -39,7 +40,8 @@
                 android:padding="@dimen/_15dp"
                 android:text="@string/change_photo"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_16sp" />
+                android:textSize="@dimen/_16sp"
+                android:visibility="gone" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

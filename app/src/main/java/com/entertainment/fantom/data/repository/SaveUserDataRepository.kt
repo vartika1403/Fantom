@@ -32,6 +32,7 @@ class SaveUserDataRepository {
                     userRef.setValue(detailObject).await()
                     emit(Resource.Success(data = "success"))
                 } else {
+                    userRef.setValue(detailObject).await()
                     emit(Resource.Error(error = "Can not submit data"))
                 }
             } catch (e: Exception) {

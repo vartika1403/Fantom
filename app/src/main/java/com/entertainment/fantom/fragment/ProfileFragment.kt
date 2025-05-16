@@ -1,5 +1,6 @@
 package com.entertainment.fantom.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -74,17 +75,18 @@ class ProfileFragment : Fragment() {
         displayUi()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun displayUi() {
         detailObject?.let {
             binding.apply {
-                tvName.isVisible = !it.name.isNullOrEmpty()
-                tvName.text = it.name
-                tvWebsite.isVisible = !it.webLink.isNullOrEmpty()
-                tvWebsiteLink.text = it.webLink
+                tvNameValue.isVisible = !it.name.isNullOrEmpty()
+                tvNameValue.text = "Name: ${it.name}"
+                tvWebsiteLink.isVisible = !it.webLink.isNullOrEmpty()
+                tvWebsiteLink.text = "Website: ${it.webLink}"
                 tvCategory.isVisible = !it.category.isNullOrEmpty()
-                tvCategory.text = it.category
-                tvFacebook.isVisible = !it.fbLink.isNullOrEmpty()
-                tvFacebookLink.text = it.fbLink
+                tvCategory.text = "Category: ${it.category}"
+                tvFacebookLink.isVisible = !it.fbLink.isNullOrEmpty()
+                tvFacebookLink.text = "Facebook or Instagram: ${it.fbLink}"
             }
         }
     }

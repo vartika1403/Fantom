@@ -38,7 +38,7 @@ class SearchRepository {
                         val detailObject = data.getValue(
                             DetailObject::class.java
                         )
-                        detailObject?.name = data.key
+                        //detailObject?.name = data.key
                         val fbLink = detailObject?.fbLink
                         val webLink = detailObject?.webLink
                         val imageUrl = detailObject?.image

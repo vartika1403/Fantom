@@ -22,7 +22,6 @@ import com.entertainment.fantom.R
 import com.entertainment.fantom.data.Resource
 import com.entertainment.fantom.data.repository.ProfileRepository
 import com.entertainment.fantom.databinding.FragmentEditProfileBinding
-import com.entertainment.fantom.utils.UiUtils.getCategories
 import com.entertainment.fantom.utils.Utils.hideProgressDialog
 import com.entertainment.fantom.utils.Utils.showProgressDialog
 import com.entertainment.fantom.viewmodel.ProfileViewModel
@@ -40,7 +39,7 @@ class EditProfileFragment : Fragment() {
     private val profileRepository by lazy {
         ProfileRepository()
     }
-    private var categoriesList = listOf("Female Singer", "Male Singer", "Guitarist", "Band")
+    private lateinit var categoriesList: List<String>
     private val profileViewModel by viewModels<ProfileViewModel> {
         ProfileViewModelFactory(
             context as Activity?,
@@ -184,13 +183,16 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun setupCategorySpinner() {
-        if (getCategories().isNotEmpty()) {
-            categoriesList = getCategories()
-        }
+
+        /* if (getCategories().isNotEmpty()) {
+             categoriesList = getCategories()
+         } else {*/
+        categoriesList = listOf("Female Singer", "Male Singer", "Guitarist", "Band")
+        //}
         val activityContext = activity ?: return
         val categorySpinner: Spinner = binding.userCategorySpinner
 
-        val arrayAdapter = ArrayAdapter<String>(
+        val arrayAdapter = ArrayAdapter(
             activityContext,
             R.layout.spinner_text,
             categoriesList
@@ -218,5 +220,6 @@ class EditProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        categoriesList = emptyList()
     }
 }

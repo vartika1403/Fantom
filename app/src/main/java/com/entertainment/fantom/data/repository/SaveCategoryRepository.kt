@@ -29,13 +29,16 @@ class SaveCategoryRepository {
             try {
                 val databaseReference =
                     categoryDatabaseReference.child(category)
+                val userRef =
+                    databaseReference.orderByChild("userId").equalTo(detailObject.userId)
                 val snapshot =
-                    databaseReference.orderByChild("userId").equalTo(detailObject.userId).get()
+                    userRef.get()
                         .await()
                 if (snapshot.exists()) {
-                    databaseReference.child(detailObject.name).setValue(detailObject).await()
+                    databaseReference.child(detailObject.userId).setValue(detailObject).await()
                     emit(Resource.Success(data = "success"))
                 } else {
+                    databaseReference.child(detailObject.userId).setValue(detailObject).await()
                     emit(Resource.Error(error = "Can not submit data"))
                 }
             } catch (e: Exception) {
