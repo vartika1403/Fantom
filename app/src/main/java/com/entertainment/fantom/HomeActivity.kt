@@ -5,10 +5,8 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -104,16 +102,6 @@ class HomeActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(@NonNull item: MenuItem): Boolean {
-        /*  when (item.itemId) {
-              R.id.add_profile -> {
-                  navController.navigate(R.id.profileFragment)
-                  return true
-              }
-          }*/
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun loadHomeFragment() {
         isLogin = sharedPreferences?.getBoolean("isLogin", false) ?: false
         Log.d(TAG, "Login home: $isLogin")
@@ -140,12 +128,7 @@ class HomeActivity : AppCompatActivity() {
 
         if (currentDestination == R.id.homeFragment) {
             finish()
-        } /*else if (!navController.navigateUp()) {
-            super.onBackPressed();
-        } else {
-            navController.navigateUp()
-
-        }*/
+        }
     }
 
     companion object {
