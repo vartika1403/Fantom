@@ -1,37 +1,27 @@
 {
   "project_info": {
-    "project_number": "163114183350",
-    "firebase_url": "https://meetup-99fea.firebaseio.com",
-    "project_id": "meetup-99fea",
-    "storage_bucket": "meetup-99fea.appspot.com"
+    "project_number": "149736038221",
+    "firebase_url": "https://fraternity-2cb7b-default-rtdb.firebaseio.com",
+    "project_id": "fraternity-2cb7b",
+    "storage_bucket": "fraternity-2cb7b.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:163114183350:android:742568e6b329564d",
+        "mobilesdk_app_id": "1:149736038221:android:fcdfe046d95f2f39bd6104",
         "android_client_info": {
-          "package_name": "com.entertainment.fantom"
+          "package_name": "com.entertainment.fraternity"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "163114183350-0q7hm1gic0ejeuspmh66k9bl7seogfcl.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA9Up037dnVPwZs2LESlgHabeCW595fZMw"
+          "current_key": "AIzaSyDjBEs7WZ7pR6BCCkHuEy5XWAeuwb3bqyo"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "163114183350-0q7hm1gic0ejeuspmh66k9bl7seogfcl.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
